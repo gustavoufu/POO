@@ -1,8 +1,8 @@
 from modelos import TITULO, VERDE, VERMELHO, NORMAL
 from dados import salvar_arquivos
 from validacoes import (verificar_int, pedir_input, pedir_severidade, 
-    exibir_tipos_de_ativos, pedir_tipo_de_ativo, 
-    exibe_dados_ativo, exibe_vulnerabilidades_ativo)
+    exibir_tipos_de_ativos, pedir_tipo_de_ativo, exibe_vulnerabilidades_ativo)
+from classes import *
 
 def mostrar_menu():
     print()
@@ -22,39 +22,45 @@ def cadastrar_ativo(lista_ativos):
     print(f"{TITULO}=-=-=-=-=- CADASTRO DE NOVO ATIVO -=-=-=-=-=-={NORMAL}")
     print()
     if lista_ativos:
-        novo_id = max(ativo["id"] for ativo in lista_ativos) + 1
+        novo_id = max(ativo.id for ativo in lista_ativos) + 1
     else:
         novo_id = 1
 
-    dados_ativo_novo = { 
-        "id": novo_id,
-        "nome": pedir_input("Digite o nome do ativo: "),
-        "responsavel": pedir_input("Digite o responsável pelo ativo: "),
-        "setor": pedir_input("Digite o setor responsável: "),
-        "tipo": exibir_tipos_de_ativos() or pedir_tipo_de_ativo(),
-        "vulnerabilidades": [],
-    }
-    print()
+    id_ativo = novo_id
+    nome_ativo = pedir_input("Digite o nome do ativo: ")
+    responsavel_ativo = pedir_input("Digite o responsável pelo ativo: ")
+    setor_ativo = pedir_input("Digite o setor responsável: ")
+    tipo_ativo = exibir_tipos_de_ativos() or pedir_tipo_de_ativo()
+
+    if tipo_ativo == 1:
+        ativo_objeto_novo = Notebook(id_ativo, nome_ativo, responsavel_ativo, setor_ativo)
+    elif tipo_ativo == 2:
+        ativo_objeto_novo = Servidor(id_ativo, nome_ativo, responsavel_ativo, setor_ativo)
+    elif tipo_ativo == 3:
+        ativo_objeto_novo = Roteador(id_ativo, nome_ativo, responsavel_ativo, setor_ativo)
+    elif tipo_ativo == 4:
+        ativo_objeto_novo = Aplicativo(id_ativo, nome_ativo, responsavel_ativo, setor_ativo)
 
     while True:
         escolha = pedir_input("Deseja cadastrar uma vulnerabilidade inicial? [S/N] ").lower()
         if escolha == "s":
-            vulne_nova = {
-                'nome': pedir_input("Digite um nome para a vulnerabilidade: "),
-                'descricao': pedir_input("Digite uma descrição: "),
-                'categoria': pedir_input("Digite uma categoria: "),
-                'severidade': pedir_severidade(),
-                'status': pedir_input("Status de tratamento: ")}
-            dados_ativo_novo['vulnerabilidades'].append(vulne_nova)
+            nome = pedir_input("Digite um nome para a vulnerabilidade: ")
+            descricao = pedir_input("Digite uma descrição: ")
+            categoria = pedir_input("Digite uma categoria: ")
+            severidade = pedir_severidade()
+            status = pedir_input("Status de tratamento: ")
+
+            vulne_nova = Vulnerabilidade(nome, descricao, categoria, severidade, status)
+            ativo_objeto_novo.adicionar_vulnerabilidade(vulne_nova)
             break
         elif escolha == "n":
-            break
+            break 
         else:
             print(f"{VERMELHO}Essa opção não está disponível!{NORMAL}")
             continue
 
     print()
-    lista_ativos.append(dados_ativo_novo)
+    lista_ativos.append(ativo_objeto_novo)
 
     if salvar_arquivos(lista_ativos):
         print(f"{VERDE}Ativo cadastrado com sucesso!{NORMAL}")
@@ -68,7 +74,7 @@ def cadastrar_vulnerabilidade(lista_ativos):
         print(f"{TITULO}=-=-=-=-=-=- ATIVOS CADASTRADOS -=-=-=-=-=-=-={NORMAL}")
         print()
         for ativo in lista_ativos:
-            print(f"ID:{ativo['id']} - {ativo['nome']}")
+            print(f"ID:{ativo.id} - {ativo.nome}")
             print()
 
         while True:
@@ -76,15 +82,18 @@ def cadastrar_vulnerabilidade(lista_ativos):
             print()
             encontrado = False
             for ativo in lista_ativos:
-                if ativo['id'] == escolha_id:
+                if ativo.id == escolha_id:
                     encontrado = True
-                    vulne_nova = {
-                        'nome': pedir_input("Digite um nome para a vulnerabilidade: "),
-                        'descricao': pedir_input("Digite uma descrição: "),
-                        'categoria': pedir_input("Digite uma categoria: "),
-                        'severidade': pedir_severidade(),
-                        'status': pedir_input("Status de tratamento: ")} 
-                    ativo['vulnerabilidades'].append(vulne_nova)
+
+                    nome = pedir_input("Digite um nome para a vulnerabilidade: ")
+                    descricao = pedir_input("Digite uma descrição: ")
+                    categoria = pedir_input("Digite uma categoria: ")
+                    severidade = pedir_severidade()
+                    status = pedir_input("Status de tratamento: ")
+
+                    vulne_nova = Vulnerabilidade(nome, descricao, categoria, severidade, status)
+
+                    ativo.adicionar_vulnerabilidade(vulne_nova)
 
                     if salvar_arquivos(lista_ativos):
                         print()
@@ -109,7 +118,7 @@ def listar_ativos(lista_ativos):
         print(f"{TITULO}=-=-=-=-=-=- ATIVOS CADASTRADOS -=-=-=-=-=-=-={NORMAL}")
         print()
         for ativo in lista_ativos:
-            print(f"ID:{ativo['id']} - {ativo['nome']}")
+            print(f"ID:{ativo.id} - {ativo.nome}")
 
 def consultar_ativo(lista_ativos):
     if lista_ativos == []:
@@ -135,42 +144,34 @@ def consultar_ativo(lista_ativos):
         if busca_opcao == 1:
             id_digitado = verificar_int("Digite o ID do ativo que deseja buscar: ")
             print()
-            if id_digitado not in [ativo["id"] for ativo in lista_ativos]:
+            if id_digitado not in [ativo.id for ativo in lista_ativos]:
                 print(f"{VERMELHO}Esse ID não foi encontrado!{NORMAL}")
                 return
             else:
                 for ativo in lista_ativos:
-                    if ativo["id"] == id_digitado:
+                    if ativo.id == id_digitado:
 
                         print(f"{TITULO}-=-=-=-=-=-=- ATIVO ENCONTRADO -=-=-=-=-=-=-=-{NORMAL}")
                         print()
-                        exibe_dados_ativo(ativo)
+                        ativo.exibir_detalhes()
                         print()
-
-                        if len(ativo['vulnerabilidades']) == 0:
-                            print("Nenhuma vulnerabilidade cadastrada.")
-                        else:
-                            exibe_vulnerabilidades_ativo(ativo)
+                        exibe_vulnerabilidades_ativo(ativo)
 
         elif busca_opcao == 2: 
             nome_digitado = pedir_input("Digite o nome do ativo que deseja buscar: ").strip()
             print()
-            if nome_digitado.lower() not in (ativo['nome'].lower() for ativo in lista_ativos):
+            if nome_digitado.lower() not in (ativo.nome.lower() for ativo in lista_ativos):
                 print(f"{VERMELHO}Esse nome não pertence a um ativo cadastrado!{NORMAL}")
                 return
             else:
                 for ativo in lista_ativos:
-                    if ativo["nome"].lower() == nome_digitado.lower():
+                    if ativo.nome.lower() == nome_digitado.lower():
                         
                         print(f"{TITULO}-=-=-=-=-=-=- ATIVO ENCONTRADO -=-=-=-=-=-=-=-{NORMAL}")
                         print()
-                        exibe_dados_ativo(ativo)
-
+                        ativo.exibir_detalhes()
                         print()
-                        if len(ativo['vulnerabilidades']) == 0:
-                            print("Nenhuma vulnerabilidade cadastrada.")
-                        else:
-                            exibe_vulnerabilidades_ativo(ativo)
+                        exibe_vulnerabilidades_ativo(ativo)
 
         elif busca_opcao == 3:
             return
@@ -190,7 +191,7 @@ def atualizar_ativo(lista_ativos):
         print()
 
         for ativo in lista_ativos:
-            print(f"ID:{ativo['id']} - {ativo['nome']}")
+            print(f"ID:{ativo.id} - {ativo.nome}")
             print()
             
         while True:
@@ -198,7 +199,7 @@ def atualizar_ativo(lista_ativos):
 
             encontrado = False
             for ativo in lista_ativos:
-                if ativo['id'] == id_escolhido:
+                if ativo.id == id_escolhido:
                     encontrado = True
                     while True:
 
@@ -222,32 +223,49 @@ def atualizar_ativo(lista_ativos):
                             continue
 
                         elif escolha_atualizar == 1:
-                            print(f"OBS: O nome atual é {ativo['nome']}")
-                            ativo['nome'] = pedir_input("Digite o novo nome do ativo: ")
+                            print(f"OBS: O nome atual é {ativo.nome}")
+                            ativo.nome = pedir_input("Digite o novo nome do ativo: ")
                             if salvar_arquivos(lista_ativos):
                                 print()
                                 print(f"{VERDE}Nome alterado com sucesso!{NORMAL}")
                             
 
                         elif escolha_atualizar == 2:
-                            print(f"OBS: O responsável atual é {ativo['responsavel']}")
-                            ativo['responsavel'] = pedir_input("Digite o responsável pelo ativo: ")
+                            print(f"OBS: O responsável atual é {ativo.responsavel}")
+                            ativo.responsavel = pedir_input("Digite o responsável pelo ativo: ")
                             if salvar_arquivos(lista_ativos):
                                 print()
                                 print(f"{VERDE}Responsável alterado com sucesso!{NORMAL}")
 
                         elif escolha_atualizar == 3:
-                            print(f"OBS: O setor responsável atual é {ativo['setor']}")
-                            ativo['setor'] = pedir_input("Digite o setor responsável: ")
+                            print(f"OBS: O setor responsável atual é {ativo.setor}")
+                            ativo.setor = pedir_input("Digite o setor responsável: ")
                             if salvar_arquivos(lista_ativos):
                                 print()
                                 print(f"{VERDE}Setor alterado com sucesso!{NORMAL}")
 
                         elif escolha_atualizar == 4:
-                            print(f"OBS: O ativo atual é do tipo {ativo['tipo']}")
+                            print(f"OBS: O ativo atual é do tipo {type(ativo).__name__}")
                             print()
                             exibir_tipos_de_ativos()
-                            ativo['tipo'] = pedir_tipo_de_ativo()
+                            novo_ativo_tipo = pedir_tipo_de_ativo()
+
+                            if novo_ativo_tipo == 1:
+                                novo_ativo = Notebook(ativo.id, ativo.nome, ativo.responsavel, ativo.setor)
+                            elif novo_ativo_tipo == 2:
+                                novo_ativo = Servidor(ativo.id, ativo.nome, ativo.responsavel, ativo.setor)
+                            elif novo_ativo_tipo == 3:
+                                novo_ativo = Roteador(ativo.id, ativo.nome, ativo.responsavel, ativo.setor)
+                            elif novo_ativo_tipo == 4:
+                                novo_ativo = Aplicativo(ativo.id, ativo.nome, ativo.responsavel, ativo.setor)
+
+                            # transferindo as vulnerabilidades do ativo antigo para o novo ativo
+                            novo_ativo.vulnerabilidades = ativo.vulnerabilidades
+
+                            posicao = lista_ativos.index(ativo)
+                            lista_ativos[posicao] = novo_ativo
+                            ativo = novo_ativo
+
                             if salvar_arquivos(lista_ativos):
                                 print()
                                 print(f"{VERDE}Tipo do ativo alterado com sucesso!{NORMAL}")
@@ -276,7 +294,7 @@ def remover_ativo(lista_ativos):
     print()
 
     for ativo in lista_ativos:
-        print(f"ID:{ativo['id']} - {ativo['nome']}")
+        print(f"ID:{ativo.id} - {ativo.nome}")
         print()
 
     while True:
@@ -285,19 +303,15 @@ def remover_ativo(lista_ativos):
         
         encontrado = False
         for ativo in lista_ativos:
-            if ativo["id"] == escolha_rem:
+            if ativo.id == escolha_rem:
                 encontrado = True
 
                 print(f"{TITULO}=-=-=-=-=-= INFORMAÇÕES DO ATIVO =-=-=-=-=-=-={NORMAL}")
                 print()
-                exibe_dados_ativo(ativo)
+                ativo.exibir_detalhes()
                 print()
 
-                if len(ativo['vulnerabilidades']) == 0:
-                    print("Nenhuma vulnerabilidade cadastrada.")
-                    print()
-                else:
-                    exibe_vulnerabilidades_ativo(ativo)
+                exibe_vulnerabilidades_ativo(ativo)
 
                 while True:
                     print(f"{VERMELHO}Atenção{NORMAL}: ao excluir este ativo, todas as vulnerabilidades associadas a ele também serão removidas.")

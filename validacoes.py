@@ -1,4 +1,5 @@
 from modelos import VERMELHO, TITULO, NORMAL, TiposDeAtivos, Severidade_Extenso
+from classes import *
 
 def verificar_int(mensagem):
     while True:
@@ -53,21 +54,18 @@ def pedir_tipo_de_ativo():
         else:
             return tipo
 
-def exibe_dados_ativo(ativo):
-    print(f"ID: {ativo['id']}")
-    print(f"Nome: {ativo['nome']}")
-    print(f"Responsável: {ativo['responsavel']}")
-    print(f"Setor: {ativo['setor']}")
-    print(f"Tipo: {TiposDeAtivos(ativo['tipo']).name}") 
-
 def exibe_vulnerabilidades_ativo(ativo):
-    print(f"VULNERABILIDADES: ({len(ativo['vulnerabilidades'])})")
-    print()
-    for posicao, vulnerabilidade in enumerate(ativo['vulnerabilidades'], start=1):
-        print(f"{posicao}. Vulnerabilidade:")
-        for chave, valor in vulnerabilidade.items():
-            if chave == "severidade":
-                print(f"{chave.capitalize()}: {Severidade_Extenso(valor).name}")
-            else:
-                print(f"{chave.capitalize()}: {valor}")
+    if len(ativo.vulnerabilidades) == 0:
+        print("Nenhuma vulnerabilidade cadastrada.")
+
+    else:
+        print(f"VULNERABILIDADES: ({len(ativo.vulnerabilidades)})")
         print()
+        for posicao, vulnerabilidade in enumerate(ativo.vulnerabilidades, start=1):
+            print(f"{posicao}. Vulnerabilidade:")
+            print(f"Nome: {vulnerabilidade.nome}")
+            print(f"Descrição: {vulnerabilidade.descricao}")
+            print(f"Categoria: {vulnerabilidade.categoria}")
+            print(f"Severidade: {Severidade_Extenso(vulnerabilidade.severidade).name}")
+            print(f"Status: {vulnerabilidade.status}")
+            print()
