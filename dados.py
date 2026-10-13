@@ -21,13 +21,13 @@ def carregar_ativos():
                 objeto_criado = None
 
                 if ativo["Tipo"] == "Notebook":
-                    objeto_criado = Notebook(ativo["Id"], ativo["Nome"], ativo["Responsavel"], ativo["Setor"])
+                    objeto_criado = Notebook(ativo["Id"], ativo["Nome"], ativo["Responsavel"], ativo["Setor"], ativo["Sistema operacional"])
                 elif ativo["Tipo"] == "Servidor":
-                    objeto_criado = Servidor(ativo["Id"], ativo["Nome"], ativo["Responsavel"], ativo["Setor"])                
+                    objeto_criado = Servidor(ativo["Id"], ativo["Nome"], ativo["Responsavel"], ativo["Setor"], ativo["tipo_servidor"])                
                 elif ativo["Tipo"] == "Roteador":
-                    objeto_criado = Roteador(ativo["Id"], ativo["Nome"], ativo["Responsavel"], ativo["Setor"])
+                    objeto_criado = Roteador(ativo["Id"], ativo["Nome"], ativo["Responsavel"], ativo["Setor"], ativo["Versão Firmware"])
                 elif ativo["Tipo"] == "Aplicativo":
-                    objeto_criado = Aplicativo(ativo["Id"], ativo["Nome"], ativo["Responsavel"], ativo["Setor"])
+                    objeto_criado = Aplicativo(ativo["Id"], ativo["Nome"], ativo["Responsavel"], ativo["Setor"], ativo["Versão"])
 
                 if objeto_criado:
                     for vulne in ativo["Vulnerabilidades"]:
