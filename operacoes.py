@@ -33,13 +33,20 @@ def cadastrar_ativo(lista_ativos):
     tipo_ativo = exibir_tipos_de_ativos() or pedir_tipo_de_ativo()
 
     if tipo_ativo == 1:
-        ativo_objeto_novo = Notebook(id_ativo, nome_ativo, responsavel_ativo, setor_ativo)
+        sistema_operacional_ativo = pedir_input("Digite o sistema operacional do notebook: ")
+        ativo_objeto_novo = Notebook(id_ativo, nome_ativo, responsavel_ativo, setor_ativo, sistema_operacional_ativo)
+
     elif tipo_ativo == 2:
-        ativo_objeto_novo = Servidor(id_ativo, nome_ativo, responsavel_ativo, setor_ativo)
+        tipo_servidor_ativo = pedir_input("Digite o tipo do servidor [Físico, Virtual, Nuvem]: ")
+        ativo_objeto_novo = Servidor(id_ativo, nome_ativo, responsavel_ativo, setor_ativo, tipo_servidor_ativo)
+
     elif tipo_ativo == 3:
-        ativo_objeto_novo = Roteador(id_ativo, nome_ativo, responsavel_ativo, setor_ativo)
+        versao_firmware_ativo = pedir_input("Digite a versão do firmware do roteador: ")
+        ativo_objeto_novo = Roteador(id_ativo, nome_ativo, responsavel_ativo, setor_ativo, versao_firmware_ativo)
+        
     elif tipo_ativo == 4:
-        ativo_objeto_novo = Aplicativo(id_ativo, nome_ativo, responsavel_ativo, setor_ativo)
+        versao_aplicativo = pedir_input("Digite a versão do aplicativo: ")
+        ativo_objeto_novo = Aplicativo(id_ativo, nome_ativo, responsavel_ativo, setor_ativo, versao_aplicativo)
 
     while True:
         escolha = pedir_input("Deseja cadastrar uma vulnerabilidade inicial? [S/N] ").lower()

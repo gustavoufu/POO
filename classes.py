@@ -50,18 +50,79 @@ class Ativo(ABC):
         print(f"Responsável: {self.responsavel}")
         print(f"Setor: {self.setor}")
         print(f"Vulnerabilidades: {len(self.vulnerabilidades)}")
+        print(f"Fator de exposição: {self.fator_exposicao()}")
 
     def adicionar_vulnerabilidade(self, vulnerabilidade):
         self.vulnerabilidades.append(vulnerabilidade)
 
+    @abstractmethod
+    def fator_exposicao(self):
+        pass
+
 class Notebook(Ativo):
-    pass
+    def __init__(self, id, nome, responsavel, setor, sistema_operacional="Não informado"):
+        super().__init__(id, nome, responsavel, setor)
+        self.sistema_operacional = sistema_operacional
+
+    def retorna_dicionario(self):
+        dict_mae = super().retorna_dicionario()
+        dict_mae["Sistema operacional"] = self.sistema_operacional
+        return dict_mae
+
+    def exibir_detalhes(self):
+        super().exibir_detalhes()
+        print(f"Sistema operacional: {self.sistema_operacional}")
+
+    def fator_exposicao(self):
+        return 1.0
 
 class Servidor(Ativo):
-    pass
+    def __init__(self, id, nome, responsavel, setor, tipo_servidor="Não informado"):
+        super().__init__(id, nome, responsavel, setor)
+        self.tipo_servidor = tipo_servidor
+
+    def retorna_dicionario(self):
+        dict_mae = super().retorna_dicionario()
+        dict_mae["Tipo servidor"] = self.tipo_servidor
+        return dict_mae
+
+    def exibir_detalhes(self):
+        super().exibir_detalhes()
+        print(f"Tipo do servidor: {self.tipo_servidor}")
+
+    def fator_exposicao(self):
+        return 1.3
 
 class Roteador(Ativo):
-    pass
+    def __init__(self, id, nome, responsavel, setor, versao_firmware="Não informado"):
+        super().__init__(id, nome, responsavel, setor)
+        self.versao_firmware = versao_firmware
 
+    def retorna_dicionario(self):
+        dict_mae = super().retorna_dicionario()
+        dict_mae["Versão Firmware"] = self.versao_firmware
+        return dict_mae
+
+    def exibir_detalhes(self):
+        super().exibir_detalhes()
+        print(f"Versão do Firmware: {self.versao_firmware}")
+
+    def fator_exposicao(self):
+        return 1.2
+    
 class Aplicativo(Ativo):
-    pass
+    def __init__(self, id, nome, responsavel, setor, versao="Não informado"):
+        super().__init__(id, nome, responsavel, setor)
+        self.versao = versao
+
+    def retorna_dicionario(self):
+        dict_mae = super().retorna_dicionario()
+        dict_mae["Versão"] = self.versao
+        return dict_mae
+
+    def exibir_detalhes(self):
+        super().exibir_detalhes()
+        print(f"Versão: {self.versao}")
+
+    def fator_exposicao(self):
+        return 1.1
