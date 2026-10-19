@@ -1,7 +1,7 @@
 from modelos import TITULO, VERDE, VERMELHO, NORMAL
 from dados import salvar_arquivos
-from validacoes import (verificar_int, pedir_input, pedir_severidade, 
-    exibir_tipos_de_ativos, pedir_tipo_de_ativo, exibe_vulnerabilidades_ativo)
+from validacoes import (verificar_int, pedir_input,
+    exibir_tipos_de_ativos, pedir_tipo_de_ativo, exibe_vulnerabilidades_ativo, pedir_cvss)
 from classes import *
 
 def mostrar_menu():
@@ -54,10 +54,11 @@ def cadastrar_ativo(lista_ativos):
             nome = pedir_input("Digite um nome para a vulnerabilidade: ")
             descricao = pedir_input("Digite uma descrição: ")
             categoria = pedir_input("Digite uma categoria: ")
-            severidade = pedir_severidade()
+            severidade = pedir_cvss()
             status = pedir_input("Status de tratamento: ")
+            cve = pedir_input("Digite o código CVE: ")
 
-            vulne_nova = Vulnerabilidade(nome, descricao, categoria, severidade, status)
+            vulne_nova = Vulnerabilidade(nome, descricao, categoria, severidade, status, cve)
             ativo_objeto_novo.adicionar_vulnerabilidade(vulne_nova)
             break
         elif escolha == "n":
@@ -95,10 +96,11 @@ def cadastrar_vulnerabilidade(lista_ativos):
                     nome = pedir_input("Digite um nome para a vulnerabilidade: ")
                     descricao = pedir_input("Digite uma descrição: ")
                     categoria = pedir_input("Digite uma categoria: ")
-                    severidade = pedir_severidade()
+                    severidade = pedir_cvss()
                     status = pedir_input("Status de tratamento: ")
+                    cve = pedir_input("Digite o código CVE: ")
 
-                    vulne_nova = Vulnerabilidade(nome, descricao, categoria, severidade, status)
+                    vulne_nova = Vulnerabilidade(nome, descricao, categoria, severidade, status, cve)
 
                     ativo.adicionar_vulnerabilidade(vulne_nova)
 

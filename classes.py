@@ -1,12 +1,13 @@
 from abc import ABC, abstractmethod
 
 class Vulnerabilidade:
-    def __init__(self, nome, descricao, categoria, severidade, status):
+    def __init__(self, nome, descricao, categoria, severidade, status, codigo_cve="Não informado"):
         self.nome = nome
         self.descricao = descricao
         self.categoria = categoria
         self.severidade = severidade
         self.status = status
+        self.codigo_cve = codigo_cve
 
     def retorna_dicionario(self):
         return {
@@ -14,7 +15,8 @@ class Vulnerabilidade:
             "Descrição": self.descricao,
             "Categoria": self.categoria,
             "Severidade": self.severidade,
-            "Status": self.status
+            "Status": self.status,
+            "CVE": self.codigo_cve
         }
 
     def exibir_detalhes(self):
@@ -23,6 +25,7 @@ class Vulnerabilidade:
         print(f"Categoria: {self.categoria}")
         print(f"Severidade: {self.severidade}")
         print(f"Status: {self.status}")
+        print(f"CVE: {self.codigo_cve}")
 
 class Ativo(ABC):
     def __init__(self, id, nome, responsavel, setor):
@@ -83,7 +86,7 @@ class Servidor(Ativo):
 
     def retorna_dicionario(self):
         dict_mae = super().retorna_dicionario()
-        dict_mae["Tipo servidor"] = self.tipo_servidor
+        dict_mae["Tipo_servidor"] = self.tipo_servidor
         return dict_mae
 
     def exibir_detalhes(self):

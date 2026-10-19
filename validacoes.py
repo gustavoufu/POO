@@ -1,4 +1,4 @@
-from modelos import VERMELHO, TITULO, NORMAL, TiposDeAtivos, Severidade_Extenso
+from modelos import VERMELHO, TITULO, NORMAL, TiposDeAtivos
 from classes import *
 
 def verificar_int(mensagem):
@@ -10,6 +10,19 @@ def verificar_int(mensagem):
             continue
         else:
             return inteiro
+
+def pedir_cvss():
+    while True:
+        try:
+            valor_cvss = float(input("Digite um nível de severidade [0.0 até 10.0]: "))
+            if valor_cvss < 0.0 or valor_cvss > 10.0:
+                print("Valor inválido. Por favor, insira um número entre 0.0 e 10.0")
+                continue
+        except (TypeError, ValueError):
+            print("ERRO, esse valor não é valido, tente novamente...")
+            continue
+        else:
+            return valor_cvss
 
 def pedir_input(mensagem):
     while True:
@@ -66,6 +79,6 @@ def exibe_vulnerabilidades_ativo(ativo):
             print(f"Nome: {vulnerabilidade.nome}")
             print(f"Descrição: {vulnerabilidade.descricao}")
             print(f"Categoria: {vulnerabilidade.categoria}")
-            print(f"Severidade: {Severidade_Extenso(vulnerabilidade.severidade).name}")
             print(f"Status: {vulnerabilidade.status}")
-            print()
+            print(f"CVSS: {vulnerabilidade.severidade}")
+            print(f"CVE: {vulnerabilidade.codigo_cve}")

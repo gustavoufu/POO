@@ -1,1 +1,20 @@
-[]
+[
+    {
+        "Tipo": "Notebook",
+        "Id": 1,
+        "Nome": "teste",
+        "Responsavel": "stes",
+        "Setor": "teste",
+        "Vulnerabilidades": [
+            {
+                "Nome": "teste",
+                "Descri\u00e7\u00e3o": "teste",
+                "Categoria": "teste",
+                "Severidade": 2.7,
+                "Status": "aberto",
+                "CVE": "CVE-2026-002"
+            }
+        ],
+        "Sistema operacional": "win1"
+    }
+]
