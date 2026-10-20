@@ -1,1 +1,38 @@
-[]
+[
+    {
+        "Tipo": "Notebook",
+        "Id": 1,
+        "Nome": "ativo1",
+        "Responsavel": "teste",
+        "Setor": "teste",
+        "Vulnerabilidades": [
+            {
+                "Nome": "Firewall",
+                "Descri\u00e7\u00e3o": "descteste",
+                "Categoria": "categoriateste",
+                "Severidade": 6.7,
+                "Status": "aberto",
+                "CVE": "CVE-2026-0001"
+            }
+        ],
+        "Sistema operacional": "win11"
+    },
+    {
+        "Tipo": "Servidor",
+        "Id": 2,
+        "Nome": "ativo2",
+        "Responsavel": "teste",
+        "Setor": "teste",
+        "Vulnerabilidades": [
+            {
+                "Nome": "vulne2",
+                "Descri\u00e7\u00e3o": "desc2",
+                "Categoria": "cate2",
+                "Severidade": 2.7,
+                "Status": "fechado",
+                "CVE": "CVE-2026-0002"
+            }
+        ],
+        "Tipo_servidor": "fisico"
+    }
+]

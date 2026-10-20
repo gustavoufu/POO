@@ -1,5 +1,4 @@
 from dados import carregar_ativos
-import numpy as np
 
 lista_ativos = carregar_ativos()
 
@@ -51,17 +50,4 @@ def matriz_cves(lista_ativos):
 
     return matriz
 
-def calculo_risco(lista_ativos):
-    matriz = matriz_cves(lista_ativos)
-    vetor = vetor_cvss(lista_ativos)
-
-    m = np.array(matriz)
-    v = np.array(vetor, dtype=float)
-
-    b = m @ v
-
-    return b
-
 print(matriz_cves(lista_ativos))
-print(vetor_cvss(lista_ativos))
-print(calculo_risco(lista_ativos))
