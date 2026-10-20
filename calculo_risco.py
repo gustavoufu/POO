@@ -24,8 +24,30 @@ def vetor_cvss(lista_ativos):
     for cve in cves:
         for vulnerabilidade in lista_de_vulnerabilidades:
             if cve == vulnerabilidade.codigo_cve:
-                lista_cvss.append(vulnerabilidade.severidade)
+                lista_cvss.append(vulnerabilidade.severidade) 
                 break
+
+    return lista_cvss
     
 def matriz_cves(lista_ativos):
     matriz = []
+    cves = cves_unicos(lista_ativos)
+
+    for ativo in lista_ativos:
+        vetor_cves_ativo = []
+        cves_do_ativo = []
+
+        for vulnerabilidade in ativo.vulnerabilidades:
+            cves_do_ativo.append(vulnerabilidade.codigo_cve)
+
+        for cve in cves:
+            if cve in cves_do_ativo:
+                vetor_cves_ativo.append(1)
+            else:
+                vetor_cves_ativo.append(0)
+
+        matriz.append(vetor_cves_ativo)
+
+    return matriz
+
+print(matriz_cves(lista_ativos))
