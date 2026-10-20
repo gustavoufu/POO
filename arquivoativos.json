@@ -3,18 +3,54 @@
         "Tipo": "Notebook",
         "Id": 1,
         "Nome": "teste",
-        "Responsavel": "stes",
+        "Responsavel": "teste",
         "Setor": "teste",
         "Vulnerabilidades": [
             {
-                "Nome": "teste",
-                "Descri\u00e7\u00e3o": "teste",
-                "Categoria": "teste",
-                "Severidade": 2.7,
+                "Nome": "teste1",
+                "Descri\u00e7\u00e3o": "teste1",
+                "Categoria": "teste1",
+                "Severidade": 8.7,
                 "Status": "aberto",
-                "CVE": "CVE-2026-002"
+                "CVE": "2026-0001"
             }
         ],
-        "Sistema operacional": "win1"
+        "Sistema operacional": "win11"
+    },
+    {
+        "Tipo": "Roteador",
+        "Id": 2,
+        "Nome": "teste2",
+        "Responsavel": "teste2",
+        "Setor": "teste2",
+        "Vulnerabilidades": [
+            {
+                "Nome": "teste2",
+                "Descri\u00e7\u00e3o": "teste2",
+                "Categoria": "teste2",
+                "Severidade": 6.1,
+                "Status": "fechado",
+                "CVE": "2026-0002"
+            }
+        ],
+        "Vers\u00e3o Firmware": "2.5.0"
+    },
+    {
+        "Tipo": "Servidor",
+        "Id": 3,
+        "Nome": "teste",
+        "Responsavel": "ste",
+        "Setor": "teasd",
+        "Vulnerabilidades": [
+            {
+                "Nome": "teuyasd",
+                "Descri\u00e7\u00e3o": "dfg",
+                "Categoria": "awd",
+                "Severidade": 10.0,
+                "Status": "aberto",
+                "CVE": "2026-0002"
+            }
+        ],
+        "Tipo_servidor": "fisico"
     }
 ]
