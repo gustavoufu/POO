@@ -35,7 +35,7 @@ def matriz_cves(lista_ativos):
     cves = cves_unicos(lista_ativos)
 
     for ativo in lista_ativos:
-        vetor_cves_ativo = []
+        vetor_cves_ativo_booleano = []
         cves_do_ativo = []
 
         for vulnerabilidade in ativo.vulnerabilidades:
@@ -43,11 +43,11 @@ def matriz_cves(lista_ativos):
 
         for cve in cves:
             if cve in cves_do_ativo:
-                vetor_cves_ativo.append(1)
+                vetor_cves_ativo_booleano.append(1)
             else:
-                vetor_cves_ativo.append(0)
+                vetor_cves_ativo_booleano.append(0)
 
-        matriz.append(vetor_cves_ativo)
+        matriz.append(vetor_cves_ativo_booleano)
 
     return matriz
 
@@ -62,6 +62,8 @@ def calculo_risco(lista_ativos):
 
     return b
 
-print(matriz_cves(lista_ativos))
-print(vetor_cvss(lista_ativos))
-print(calculo_risco(lista_ativos))
+def exibir_riscos(lista_ativos):
+    riscos_proprios = calculo_risco(lista_ativos)
+
+    for pos, ativo in enumerate(lista_ativos):
+        print(f"Ativo: {ativo.nome} - Risco próprio: {riscos_proprios[pos]}")
