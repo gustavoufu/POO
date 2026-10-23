@@ -51,7 +51,7 @@ def matriz_cves(lista_ativos):
 
     return matriz
 
-def calculo_risco(lista_ativos):
+def calculo_risco_proprio(lista_ativos):
     matriz = matriz_cves(lista_ativos)
     vetor = vetor_cvss(lista_ativos)
 
@@ -62,8 +62,27 @@ def calculo_risco(lista_ativos):
 
     return b
 
-def exibir_riscos(lista_ativos):
-    riscos_proprios = calculo_risco(lista_ativos)
+def exibir_risco_proprio(lista_ativos):
+    riscos_proprios = calculo_risco_proprio(lista_ativos)
 
     for pos, ativo in enumerate(lista_ativos):
         print(f"Ativo: {ativo.nome} - Risco próprio: {riscos_proprios[pos]}")
+
+def matriz_dependencias(lista_ativos):
+    qtd_de_ativos = len(lista_ativos)
+
+    matriz = np.zeros((qtd_de_ativos, qtd_de_ativos), dtype=float)
+    matriz[1, 0] = 0.25
+
+    return matriz
+
+A = matriz_dependencias(lista_ativos)
+b = calculo_risco_proprio(lista_ativos)
+b = np.array(b)
+
+risco_recebido = A @ b
+
+print(f"Matriz de dependencias: {A}")
+print(f"Risco proprio: {b}")
+print(f"Risco recebido: {risco_recebido}")
+print(f"Risco total: {b + risco_recebido}")
