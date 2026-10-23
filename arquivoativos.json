@@ -1,1 +1,38 @@
-[]
+[
+    {
+        "Tipo": "Notebook",
+        "Id": 1,
+        "Nome": "teste",
+        "Responsavel": "teste",
+        "Setor": "teste",
+        "Vulnerabilidades": [
+            {
+                "Nome": "teste",
+                "Descri\u00e7\u00e3o": "teste",
+                "Categoria": "teste",
+                "Severidade": 6.7,
+                "Status": "fechado",
+                "CVE": "CVE-2026-0001"
+            }
+        ],
+        "Sistema operacional": "win11"
+    },
+    {
+        "Tipo": "Roteador",
+        "Id": 2,
+        "Nome": "teste",
+        "Responsavel": "teste",
+        "Setor": "teste",
+        "Vulnerabilidades": [
+            {
+                "Nome": "teste2",
+                "Descri\u00e7\u00e3o": "teste",
+                "Categoria": "teste",
+                "Severidade": 4.5,
+                "Status": "aberto",
+                "CVE": "CVE-2026-0002"
+            }
+        ],
+        "Vers\u00e3o Firmware": "2.5"
+    }
+]
