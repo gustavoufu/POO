@@ -72,17 +72,29 @@ def matriz_dependencias(lista_ativos):
     qtd_de_ativos = len(lista_ativos)
 
     matriz = np.zeros((qtd_de_ativos, qtd_de_ativos), dtype=float)
+    matriz[0, 1] = 0.5
     matriz[1, 0] = 0.25
 
     return matriz
 
-A = matriz_dependencias(lista_ativos)
-b = calculo_risco_proprio(lista_ativos)
-b = np.array(b)
+def matriz_identidade(lista_ativos):
 
-risco_recebido = A @ b
+    quantidade_ativos = len(lista_ativos)
+    matriz_identidade = np.eye(quantidade_ativos, quantidade_ativos)
 
-print(f"Matriz de dependencias: {A}")
-print(f"Risco proprio: {b}")
-print(f"Risco recebido: {risco_recebido}")
-print(f"Risco total: {b + risco_recebido}")
+    return matriz_identidade
+
+def calculo_risco_total(lista_ativos):
+
+    #(I - D):
+    I = matriz_identidade(lista_ativos)
+    D = matriz_dependencias(lista_ativos)
+
+    A = I - D
+
+    #A @ x = b
+    b = calculo_risco_proprio(lista_ativos)
+
+    vetor_risco_total_final = np.linalg.solve(A, b)
+
+    return vetor_risco_total_final
