@@ -98,3 +98,8 @@ def calculo_risco_total(lista_ativos):
     vetor_risco_total_final = np.linalg.solve(A, b)
 
     return vetor_risco_total_final
+
+def exibir_riscos_totais(lista_ativos):
+    lista_dos_riscos = calculo_risco_total(lista_ativos)
+    for pos, ativo in enumerate(lista_ativos):
+        print(f"Ativo: {ativo.nome} | Risco total: {lista_dos_riscos[pos]:.2f}")
