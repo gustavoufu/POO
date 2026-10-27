@@ -1,7 +1,13 @@
 from modelos import TITULO, VERDE, VERMELHO, NORMAL
 from dados import salvar_arquivos
+<<<<<<< Updated upstream
 from validacoes import (verificar_int, pedir_input, pedir_severidade, 
     exibir_tipos_de_ativos, pedir_tipo_de_ativo, exibe_vulnerabilidades_ativo)
+=======
+from validacoes import (verificar_int, pedir_input,
+    exibir_tipos_de_ativos, pedir_tipo_de_ativo, exibe_vulnerabilidades_ativo, pedir_cvss)
+from calculo_risco import calculo_risco_proprio, calculo_risco_total
+>>>>>>> Stashed changes
 from classes import *
 
 def mostrar_menu():
@@ -14,7 +20,8 @@ def mostrar_menu():
     print("4 - Buscar e Consultar ativos")
     print("5 - Atualizar ativos")
     print("6 - Remover ativos")
-    print("7 - Sair")
+    print("7 - Mostrar riscos")
+    print("8 - Sair")
     print()
 
 def cadastrar_ativo(lista_ativos):
@@ -125,7 +132,7 @@ def listar_ativos(lista_ativos):
         print(f"{TITULO}=-=-=-=-=-=- ATIVOS CADASTRADOS -=-=-=-=-=-=-={NORMAL}")
         print()
         for ativo in lista_ativos:
-            print(f"ID:{ativo.id} - {ativo.nome}")
+            print(f"ID: {ativo.id} | {ativo.nome}")
 
 def consultar_ativo(lista_ativos):
     if lista_ativos == []:
@@ -342,3 +349,22 @@ def remover_ativo(lista_ativos):
         if not encontrado:
             print(f"{VERMELHO}Esse ID não foi encontrado!{NORMAL}")
             continue
+
+def mostrar_riscos(lista_ativos):
+    print()
+    if lista_ativos == []:
+        print(f"{TITULO}-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-={NORMAL}")
+        print()
+        print("Não há ativos cadastrados!")
+    else:
+        print(f"{TITULO}-=-=-=-=-=-=-=-= RISCOS DOS ATIVOS =-=-=-=-=-=-=-=-={NORMAL}")
+        print()
+
+        risco_proprio = calculo_risco_proprio(lista_ativos)
+        risco_total = calculo_risco_total(lista_ativos)
+
+        for pos, ativo in enumerate(lista_ativos):
+            print(f"ID: {ativo.id} | Nome: {ativo.nome}")
+            print(f"Risco próprio: {risco_proprio[pos]}")
+            print(f"Risco total: {risco_total[pos]:.2f}")
+            print()
