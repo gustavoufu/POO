@@ -1,3 +1,4 @@
+from calculo_risco import calculo_risco_total
 from modelos import TITULO, VERDE, VERMELHO, NORMAL
 from dados import salvar_arquivos
 from validacoes import (verificar_int, pedir_input,
@@ -8,13 +9,14 @@ def mostrar_menu():
     print()
     print(f"{TITULO}-=-=-=-=-=-=-= MENU PRINCIPAL =-=-=-=-=-=--=-={NORMAL}")
     print()
-    print("1 - Cadastro de ativos")
-    print("2 - Cadastrar vulnerabilidades")
-    print("3 - Listar ativos")
-    print("4 - Buscar e Consultar ativos")
-    print("5 - Atualizar ativos")
-    print("6 - Remover ativos")
-    print("7 - Sair")
+    print("1 - Cadastro de ativo")
+    print("2 - Cadastrar vulnerabilidade")
+    print("3 - Listar ativo")
+    print("4 - Buscar e Consultar ativo")
+    print("5 - Atualizar ativo")
+    print("6 - Remover ativo")
+    print("7 - Exibir riscos totais")
+    print("8 - Sair")
     print()
 
 def cadastrar_ativo(lista_ativos):
@@ -344,3 +346,10 @@ def remover_ativo(lista_ativos):
         if not encontrado:
             print(f"{VERMELHO}Esse ID não foi encontrado!{NORMAL}")
             continue
+
+def mostrar_riscos(lista_ativos):
+    print(f"{TITULO}=-=-=-=-=-=-=-=-=- RISCOS -=-=-=-=-=-=-=-=-=-={NORMAL}")
+    print()
+    lista_dos_riscos = calculo_risco_total(lista_ativos)
+    for pos, ativo in enumerate(lista_ativos):
+        print(f"Ativo: {ativo.nome} | Risco total: {lista_dos_riscos[pos]:.2f}")

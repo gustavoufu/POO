@@ -6,6 +6,7 @@ from operacoes import (
     consultar_ativo,
     atualizar_ativo,
     remover_ativo,
+    mostrar_riscos,
     mostrar_menu)
 from dados import carregar_ativos
 from validacoes import verificar_int
@@ -18,7 +19,8 @@ opcoes = {
     3:listar_ativos,
     4:consultar_ativo,
     5:atualizar_ativo,
-    6:remover_ativo
+    6:remover_ativo,
+    7:mostrar_riscos
 }
 
 while True:
@@ -26,9 +28,10 @@ while True:
     mostrar_menu()
     opcao = verificar_int("Escolha uma opção: ")
 
-    if opcao == 7:
+    if opcao == 8:
         print()
         print(f"{VERDE}Saindo do sistema. Até logo!{NORMAL}")
+        print()
         break
             
     elif opcao not in opcoes:
