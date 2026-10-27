@@ -23,7 +23,7 @@ def carregar_ativos():
                 if ativo["Tipo"] == "Notebook":
                     objeto_criado = Notebook(ativo["Id"], ativo["Nome"], ativo["Responsavel"], ativo["Setor"], ativo["Sistema operacional"])
                 elif ativo["Tipo"] == "Servidor":
-                    objeto_criado = Servidor(ativo["Id"], ativo["Nome"], ativo["Responsavel"], ativo["Setor"], ativo["tipo_servidor"])                
+                    objeto_criado = Servidor(ativo["Id"], ativo["Nome"], ativo["Responsavel"], ativo["Setor"], ativo["Tipo_servidor"])                
                 elif ativo["Tipo"] == "Roteador":
                     objeto_criado = Roteador(ativo["Id"], ativo["Nome"], ativo["Responsavel"], ativo["Setor"], ativo["Versão Firmware"])
                 elif ativo["Tipo"] == "Aplicativo":
@@ -31,7 +31,7 @@ def carregar_ativos():
 
                 if objeto_criado:
                     for vulne in ativo["Vulnerabilidades"]:
-                        vulne_nova = Vulnerabilidade(vulne["Nome"], vulne["Descrição"], vulne["Categoria"], vulne["Severidade"], vulne["Status"])
+                        vulne_nova = Vulnerabilidade(vulne["Nome"], vulne["Descrição"], vulne["Categoria"], vulne["Severidade"], vulne["Status"], vulne["CVE"])
                         objeto_criado.adicionar_vulnerabilidade(vulne_nova)
 
                     lista_objetos_criados.append(objeto_criado)
