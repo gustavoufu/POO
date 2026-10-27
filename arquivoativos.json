@@ -15,6 +15,7 @@
                 "CVE": "CVE-2026-0001"
             }
         ],
+        "Dependencias": [],
         "Sistema operacional": "win11"
     },
     {
@@ -33,6 +34,26 @@
                 "CVE": "CVE-2026-0002"
             }
         ],
+        "Dependencias": [],
         "Tipo_servidor": "2.5"
+    },
+    {
+        "Tipo": "Notebook",
+        "Id": 3,
+        "Nome": "dependencia",
+        "Responsavel": "teste",
+        "Setor": "teste",
+        "Vulnerabilidades": [
+            {
+                "Nome": "dependencia",
+                "Descri\u00e7\u00e3o": "test",
+                "Categoria": "teste",
+                "Severidade": 6.7,
+                "Status": "fechado",
+                "CVE": "CVE-2026-0001"
+            }
+        ],
+        "Dependencias": [],
+        "Sistema operacional": "win9"
     }
 ]

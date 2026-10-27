@@ -35,6 +35,7 @@ class Ativo(ABC):
         self.setor = setor
 
         self.vulnerabilidades = []
+        self.dependencias = []
 
     def retorna_dicionario(self):
         return {
@@ -43,7 +44,8 @@ class Ativo(ABC):
             "Nome": self.nome,
             "Responsavel": self.responsavel,
             "Setor": self.setor,
-            "Vulnerabilidades": [v.retorna_dicionario() for v in self.vulnerabilidades]
+            "Vulnerabilidades": [v.retorna_dicionario() for v in self.vulnerabilidades],
+            "Dependencias" : self.dependencias
         }
 
     def exibir_detalhes(self):
@@ -57,6 +59,13 @@ class Ativo(ABC):
 
     def adicionar_vulnerabilidade(self, vulnerabilidade):
         self.vulnerabilidades.append(vulnerabilidade)
+
+    def adicionar_dependencia(self, id_quem_compartilha_risco, fator):
+        dependencia = {
+            "AtivoIdBaseRisco": id_quem_compartilha_risco,
+            "Fator": fator
+        }
+        self.dependencias.append(dependencia)
 
     @abstractmethod
     def fator_exposicao(self):

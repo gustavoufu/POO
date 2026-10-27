@@ -34,6 +34,9 @@ def carregar_ativos():
                         vulne_nova = Vulnerabilidade(vulne["Nome"], vulne["Descrição"], vulne["Categoria"], vulne["Severidade"], vulne["Status"], vulne["CVE"])
                         objeto_criado.adicionar_vulnerabilidade(vulne_nova)
 
+                    for dependencia in ativo.get("Dependencias", []):
+                        objeto_criado.adicionar_dependencia(dependencia["AtivoIdBaseRisco"], dependencia["Fator"])
+
                     lista_objetos_criados.append(objeto_criado)
             return lista_objetos_criados
 
