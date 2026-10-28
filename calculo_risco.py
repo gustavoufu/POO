@@ -71,11 +71,32 @@ def exibir_risco_proprio(lista_ativos):
 def matriz_dependencias(lista_ativos):
     qtd_de_ativos = len(lista_ativos)
 
+
     matriz = np.zeros((qtd_de_ativos, qtd_de_ativos), dtype=float)
-    matriz[0, 1] = 0.5
-    matriz[1, 0] = 0.25
+
+    posicao_por_id = {}
+    for posicao, ativo in enumerate(lista_ativos):
+        posicao_por_id[ativo.id] = posicao
+ 
+        for ativo_recebedor in lista_ativos:
+            linha = posicao_por_id[ativo_recebedor.id]
+            print("Dicionário de posições:", posicao_por_id)
+        
+        for dependencia in ativo_recebedor.dependencias:
+            id_transmissor = dependencia["AtivoIdBaseRisco"]    
+            coluna = posicao_por_id[id_transmissor]
+
+            
+            dependencia["Fator"] = matriz[linha, coluna]
 
     return matriz
+
+print(matriz_dependencias(lista_ativos))
+
+matriz_dependencias(lista_ativos)
+
+print(matriz_dependencias(lista_ativos))
+
 
 def matriz_identidade(lista_ativos):
 

@@ -363,7 +363,9 @@ def cadastrar_dependencias(lista_ativos):
             print(f"Nome: {ativo.nome} | ID: {ativo.id}")
         print()
     else:
-        print("Não há ativos cadastrados")
+        print()
+        print("É necessário ter pelo menos 2 ativos cadastrados.")
+        return
 
 
     while True: #ativo que recebe risco
