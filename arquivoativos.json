@@ -5,55 +5,18 @@
         "Nome": "teste",
         "Responsavel": "teste",
         "Setor": "teste",
-        "Vulnerabilidades": [
-            {
-                "Nome": "teste",
-                "Descri\u00e7\u00e3o": "teste",
-                "Categoria": "teste",
-                "Severidade": 8.0,
-                "Status": "fechado",
-                "CVE": "CVE-2026-0001"
-            }
-        ],
+        "Vulnerabilidades": [],
         "Dependencias": [],
         "Sistema operacional": "win11"
     },
     {
         "Tipo": "Servidor",
         "Id": 2,
-        "Nome": "teste",
+        "Nome": "teste2",
         "Responsavel": "teste",
         "Setor": "teste",
-        "Vulnerabilidades": [
-            {
-                "Nome": "teste2",
-                "Descri\u00e7\u00e3o": "teste",
-                "Categoria": "teste",
-                "Severidade": 2.0,
-                "Status": "aberto",
-                "CVE": "CVE-2026-0002"
-            }
-        ],
+        "Vulnerabilidades": [],
         "Dependencias": [],
-        "Tipo_servidor": "2.5"
-    },
-    {
-        "Tipo": "Notebook",
-        "Id": 3,
-        "Nome": "dependencia",
-        "Responsavel": "teste",
-        "Setor": "teste",
-        "Vulnerabilidades": [
-            {
-                "Nome": "dependencia",
-                "Descri\u00e7\u00e3o": "test",
-                "Categoria": "teste",
-                "Severidade": 6.7,
-                "Status": "fechado",
-                "CVE": "CVE-2026-0001"
-            }
-        ],
-        "Dependencias": [],
-        "Sistema operacional": "win9"
+        "Tipo_servidor": "fisico"
     }
 ]

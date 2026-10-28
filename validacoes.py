@@ -82,3 +82,18 @@ def exibe_vulnerabilidades_ativo(ativo):
             print(f"Status: {vulnerabilidade.status}")
             print(f"CVSS: {vulnerabilidade.severidade}")
             print(f"CVE: {vulnerabilidade.codigo_cve}")
+
+def pedir_fator_dependencia():
+    while True:
+        try:
+            valor_digitado = float(input("Informe o fator de dependência entre 0 e 1: "))
+            if 0 <= valor_digitado < 1:
+                return valor_digitado
+            else:
+                print("Erro, digite um valor entre 0 e 1...")
+                continue
+        except (ValueError, TypeError):
+            print("ERRO, digite um número entre 0 e 1 válido...")
+
+if __name__ == "__main__":
+    pedir_fator_dependencia()

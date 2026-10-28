@@ -2,7 +2,7 @@ from calculo_risco import calculo_risco_total
 from modelos import TITULO, VERDE, VERMELHO, NORMAL
 from dados import salvar_arquivos
 from validacoes import (verificar_int, pedir_input,
-    exibir_tipos_de_ativos, pedir_tipo_de_ativo, exibe_vulnerabilidades_ativo, pedir_cvss)
+    exibir_tipos_de_ativos, pedir_tipo_de_ativo, exibe_vulnerabilidades_ativo, pedir_cvss, pedir_fator_dependencia)
 from classes import *
 
 def mostrar_menu():
@@ -16,7 +16,8 @@ def mostrar_menu():
     print("5 - Atualizar ativo")
     print("6 - Remover ativo")
     print("7 - Exibir riscos totais")
-    print("8 - Sair")
+    print("8 - Cadastrar dependências")
+    print("9 - Sair")
     print()
 
 def cadastrar_ativo(lista_ativos):
@@ -306,9 +307,9 @@ def remover_ativo(lista_ativos):
 
     for ativo in lista_ativos:
         print(f"ID:{ativo.id} - {ativo.nome}")
-        print()
 
     while True:
+        print()
         escolha_rem = verificar_int("Digite o ID do ativo a ser removido: ")
         print()
         
@@ -353,3 +354,48 @@ def mostrar_riscos(lista_ativos):
     lista_dos_riscos = calculo_risco_total(lista_ativos)
     for pos, ativo in enumerate(lista_ativos):
         print(f"Ativo: {ativo.nome} | Risco total: {lista_dos_riscos[pos]:.2f}")
+
+def cadastrar_dependencias(lista_ativos):
+    if len(lista_ativos) >= 2:
+        print()
+        print(f"{TITULO}=-=-=-=-=-=- ATIVOS CADASTRADOS -=-=-=-=-=-=-={NORMAL}")
+        print()
+        for ativo in lista_ativos:
+            print(f"Nome: {ativo.nome} | ID: {ativo.id}")
+        print()
+    else:
+        print("Não há ativos cadastrados")
+
+
+    while True:
+        id_ativo_recebe_risco = verificar_int("Digite o ID do ativo que receberá o risco: ")
+        encontrado = False
+        for ativo in lista_ativos:
+            if ativo.id == id_ativo_recebe_risco:
+                encontrado = True
+
+        if encontrado:
+            break
+        if not encontrado:
+            print(f"{VERMELHO}Esse ID não está cadastrado!{NORMAL}")
+            continue
+
+    while True:
+        id_ativo_transmite_risco = verificar_int("Digite o ID do ativo que transmitirá o risco: ")
+        if id_ativo_transmite_risco == id_ativo_recebe_risco:
+            print()
+            print(f"{VERMELHO}Erro, o ID do ativo que envia deve ser diferente do ID do ativo que recebe.{NORMAL}")
+            print()
+            continue
+        encontrado = False
+        for ativo in lista_ativos:
+            if ativo.id == id_ativo_transmite_risco:
+                encontrado = True
+
+        if encontrado:
+            break
+        if not encontrado:
+            print(f"{VERMELHO}Esse ID não está cadastrado!{NORMAL}")
+            continue
+
+    valor_fator_dependencia = pedir_fator_dependencia()
