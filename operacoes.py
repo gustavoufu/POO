@@ -85,8 +85,7 @@ def cadastrar_vulnerabilidade(lista_ativos):
         print(f"{TITULO}=-=-=-=-=-=- ATIVOS CADASTRADOS -=-=-=-=-=-=-={NORMAL}")
         print()
         for ativo in lista_ativos:
-            print(f"ID:{ativo.id} - {ativo.nome}")
-            print()
+            print(f"ID: {ativo.id} | {ativo.nome}")
 
         while True:
             escolha_id = verificar_int("Digite o ID do ativo selecionado: ")
@@ -367,8 +366,9 @@ def cadastrar_dependencias(lista_ativos):
         print("Não há ativos cadastrados")
 
 
-    while True:
+    while True: #ativo que recebe risco
         id_ativo_recebe_risco = verificar_int("Digite o ID do ativo que receberá o risco: ")
+
         encontrado = False
         for ativo in lista_ativos:
             if ativo.id == id_ativo_recebe_risco:
@@ -380,13 +380,13 @@ def cadastrar_dependencias(lista_ativos):
             print(f"{VERMELHO}Esse ID não está cadastrado!{NORMAL}")
             continue
 
-    while True:
+    while True: #ativo que transmite risco
         id_ativo_transmite_risco = verificar_int("Digite o ID do ativo que transmitirá o risco: ")
         if id_ativo_transmite_risco == id_ativo_recebe_risco:
-            print()
-            print(f"{VERMELHO}Erro, o ID do ativo que envia deve ser diferente do ID do ativo que recebe.{NORMAL}")
-            print()
+
+            print(f"{VERMELHO}Erro, o ID do ativo que transmite risco deve ser diferente do ID do ativo que recebe.{NORMAL}")
             continue
+
         encontrado = False
         for ativo in lista_ativos:
             if ativo.id == id_ativo_transmite_risco:
@@ -398,4 +398,10 @@ def cadastrar_dependencias(lista_ativos):
             print(f"{VERMELHO}Esse ID não está cadastrado!{NORMAL}")
             continue
 
-    valor_fator_dependencia = pedir_fator_dependencia()
+    fator_digitado = pedir_fator_dependencia()
+
+    if id_ativo_recebe_risco and id_ativo_transmite_risco:
+        for ativo in lista_ativos:
+            if ativo.id == id_ativo_recebe_risco:
+                ativo.adicionar_dependencia(id_ativo_transmite_risco, fator_digitado)
+                salvar_arquivos(lista_ativos)

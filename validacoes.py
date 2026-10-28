@@ -87,7 +87,7 @@ def pedir_fator_dependencia():
     while True:
         try:
             valor_digitado = float(input("Informe o fator de dependência entre 0 e 1: "))
-            if 0 <= valor_digitado < 1:
+            if 0 <= valor_digitado <= 1:
                 return valor_digitado
             else:
                 print("Erro, digite um valor entre 0 e 1...")
