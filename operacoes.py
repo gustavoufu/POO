@@ -1,4 +1,4 @@
-from calculo_risco import calculo_risco_total, calculo_risco_proprio
+from calculo_risco import calculo_risco_efetivo, calculo_risco_proprio
 from modelos import TITULO, VERDE, VERMELHO, NORMAL
 from dados import salvar_arquivos
 from validacoes import (verificar_int, pedir_input,
@@ -326,11 +326,24 @@ def remover_ativo(lista_ativos):
                 exibe_vulnerabilidades_ativo(ativo)
 
                 while True:
-                    print(f"{VERMELHO}Atenção{NORMAL}: ao excluir este ativo, todas as vulnerabilidades associadas a ele também serão removidas.")
-                    confirmação = pedir_input("Confirma a exclusão? [S/N] ").lower()
-                    print()
+
+                    if ativo.vulnerabilidades:
+                        print(f"{VERMELHO}Atenção{NORMAL}: ao excluir este ativo, todas as vulnerabilidades associadas a ele também serão removidas.")
+                        confirmação = pedir_input("Confirma a exclusão? [S/N] ").lower()
+                        print()
+                    else:
+                        print(f"{VERMELHO}Atenção{NORMAL}: você tem certeza de que deseja excluir este ativo?")
+                        confirmação = pedir_input("Confirma a exclusão? [S/N] ").lower()
+                        print()
                     if confirmação == "s":
+
+                        id_do_ativo_excluido = ativo.id
+                        for ativo in lista_ativos:
+                            for dependencia in ativo.dependencias:
+                                if dependencia["AtivoIdBaseRisco"] == id_do_ativo_excluido:
+                                    ativo.dependencias.remove(dependencia)
                         lista_ativos.remove(ativo)
+
                         if salvar_arquivos(lista_ativos):
                             print(f"{VERDE}Ativo removido com sucesso!{NORMAL}")
                         break
@@ -351,13 +364,13 @@ def remover_ativo(lista_ativos):
 def mostrar_riscos(lista_ativos):
     print(f"{TITULO}=-=-=-=-=-=-=-=-=- RISCOS -=-=-=-=-=-=-=-=-=-={NORMAL}")
 
-    lista_dos_riscos_total = calculo_risco_total(lista_ativos)
+    lista_dos_riscos_efetivos = calculo_risco_efetivo(lista_ativos)
     lista_dos_riscos_proprios = calculo_risco_proprio(lista_ativos)
     for pos, ativo in enumerate(lista_ativos):
         print()
         print(f"Ativo: {ativo.nome}")
         print(f"Risco próprio: {lista_dos_riscos_proprios[pos]:.2f}")        
-        print(f"Risco total: {lista_dos_riscos_total[pos]:.2f}")
+        print(f"Risco total: {lista_dos_riscos_efetivos[pos]:.2f}")
 
 def cadastrar_dependencias(lista_ativos):
     if len(lista_ativos) >= 2:

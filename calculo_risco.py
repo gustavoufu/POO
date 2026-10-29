@@ -30,7 +30,7 @@ def vetor_cvss(lista_ativos):
 
     return lista_cvss
     
-def matriz_cves(lista_ativos):
+def matriz_incidencia(lista_ativos):
     matriz = []
     cves = cves_unicos(lista_ativos)
 
@@ -52,7 +52,7 @@ def matriz_cves(lista_ativos):
     return matriz
 
 def calculo_risco_proprio(lista_ativos):
-    matriz = matriz_cves(lista_ativos)
+    matriz = matriz_incidencia(lista_ativos)
     vetor = vetor_cvss(lista_ativos)
 
     m = np.array(matriz)
@@ -97,7 +97,7 @@ def matriz_identidade(lista_ativos):
 
     return matriz_identidade
 
-def calculo_risco_total(lista_ativos):
+def calculo_risco_efetivo(lista_ativos):
 
     #(I - D):
     I = matriz_identidade(lista_ativos)
