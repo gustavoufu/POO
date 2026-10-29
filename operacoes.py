@@ -1,4 +1,4 @@
-from calculo_risco import calculo_risco_total
+from calculo_risco import calculo_risco_total, calculo_risco_proprio
 from modelos import TITULO, VERDE, VERMELHO, NORMAL
 from dados import salvar_arquivos
 from validacoes import (verificar_int, pedir_input,
@@ -350,10 +350,14 @@ def remover_ativo(lista_ativos):
 
 def mostrar_riscos(lista_ativos):
     print(f"{TITULO}=-=-=-=-=-=-=-=-=- RISCOS -=-=-=-=-=-=-=-=-=-={NORMAL}")
-    print()
-    lista_dos_riscos = calculo_risco_total(lista_ativos)
+
+    lista_dos_riscos_total = calculo_risco_total(lista_ativos)
+    lista_dos_riscos_proprios = calculo_risco_proprio(lista_ativos)
     for pos, ativo in enumerate(lista_ativos):
-        print(f"Ativo: {ativo.nome} | Risco total: {lista_dos_riscos[pos]:.2f}")
+        print()
+        print(f"Ativo: {ativo.nome}")
+        print(f"Risco próprio: {lista_dos_riscos_proprios[pos]:.2f}")        
+        print(f"Risco total: {lista_dos_riscos_total[pos]:.2f}")
 
 def cadastrar_dependencias(lista_ativos):
     if len(lista_ativos) >= 2:
