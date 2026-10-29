@@ -88,6 +88,7 @@ def cadastrar_vulnerabilidade(lista_ativos):
             print(f"ID: {ativo.id} | {ativo.nome}")
 
         while True:
+            print()
             escolha_id = verificar_int("Digite o ID do ativo selecionado: ")
             print()
             encontrado = False

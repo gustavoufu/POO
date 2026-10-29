@@ -1,27 +1,41 @@
 [
     {
+        "Tipo": "Notebook",
+        "Id": 1,
+        "Nome": "teste",
+        "Responsavel": "teste",
+        "Setor": "teste",
+        "Vulnerabilidades": [
+            {
+                "Nome": "teste",
+                "Descri\u00e7\u00e3o": "teste",
+                "Categoria": "teste",
+                "Severidade": 10.0,
+                "Status": "aberto",
+                "CVE": "CVE-2026-0001"
+            }
+        ],
+        "Dependencias": [
+            {
+                "AtivoIdBaseRisco": 2,
+                "Fator": 0.5
+            }
+        ],
+        "Sistema operacional": "win"
+    },
+    {
         "Tipo": "Servidor",
         "Id": 2,
-        "Nome": "teste2",
+        "Nome": "teste",
         "Responsavel": "teste",
         "Setor": "teste",
         "Vulnerabilidades": [],
         "Dependencias": [
             {
-                "AtivoIdBaseRisco": 3,
+                "AtivoIdBaseRisco": 1,
                 "Fator": 0.5
             }
         ],
         "Tipo_servidor": "fisico"
-    },
-    {
-        "Tipo": "Notebook",
-        "Id": 3,
-        "Nome": "teste",
-        "Responsavel": "teste",
-        "Setor": "teste",
-        "Vulnerabilidades": [],
-        "Dependencias": [],
-        "Sistema operacional": "teste"
     }
 ]

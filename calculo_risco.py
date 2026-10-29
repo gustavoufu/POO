@@ -78,25 +78,17 @@ def matriz_dependencias(lista_ativos):
     for posicao, ativo in enumerate(lista_ativos):
         posicao_por_id[ativo.id] = posicao
  
-        for ativo_recebedor in lista_ativos:
-            linha = posicao_por_id[ativo_recebedor.id]
-            print("Dicionário de posições:", posicao_por_id)
+    for ativo in lista_ativos:
+        linha = posicao_por_id[ativo.id]
         
-        for dependencia in ativo_recebedor.dependencias:
+        for dependencia in ativo.dependencias:
             id_transmissor = dependencia["AtivoIdBaseRisco"]    
             coluna = posicao_por_id[id_transmissor]
-
+            fator = dependencia["Fator"]
             
-            dependencia["Fator"] = matriz[linha, coluna]
+            matriz[linha, coluna] = fator
 
     return matriz
-
-print(matriz_dependencias(lista_ativos))
-
-matriz_dependencias(lista_ativos)
-
-print(matriz_dependencias(lista_ativos))
-
 
 def matriz_identidade(lista_ativos):
 
