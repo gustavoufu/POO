@@ -370,7 +370,10 @@ def mostrar_riscos(lista_ativos):
         print()
         print(f"Ativo: {ativo.nome}")
         print(f"Risco próprio: {lista_dos_riscos_proprios[pos]:.2f}")        
-        print(f"Risco total: {lista_dos_riscos_efetivos[pos]:.2f}")
+        if lista_dos_riscos_efetivos is None:
+            print(f"{VERMELHO}Erro{NORMAL}: Não foi possível calcular o risco efetivo dos ativos. Verifique as dependências cadastradas.")
+        else:
+            print(f"Risco efetivo: {lista_dos_riscos_efetivos[pos]:.2f}")
 
 def cadastrar_dependencias(lista_ativos):
     if len(lista_ativos) >= 2:

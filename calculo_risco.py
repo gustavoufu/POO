@@ -105,9 +105,16 @@ def calculo_risco_efetivo(lista_ativos):
 
     A = I - D
 
+    determinante = np.linalg.det(A)
+    
+    if np.isclose(determinante, 0, atol=1e-9):
+        return None
+
     #A @ x = b
     b = calculo_risco_proprio(lista_ativos)
 
     vetor_risco_total_final = np.linalg.solve(A, b)
 
     return vetor_risco_total_final
+
+calculo_risco_efetivo(lista_ativos)
