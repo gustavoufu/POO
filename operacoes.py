@@ -17,7 +17,8 @@ def mostrar_menu():
     print("6 - Remover ativo")
     print("7 - Exibir riscos totais")
     print("8 - Cadastrar dependências")
-    print("9 - Sair")
+    print("9 - Remover dependências")
+    print("10 - Sair")
     print()
 
 def cadastrar_ativo(lista_ativos):
@@ -461,3 +462,62 @@ def cadastrar_dependencias(lista_ativos):
             if ativo.id == id_ativo_recebe_risco:
                 ativo.adicionar_dependencia(id_ativo_transmite_risco, fator_digitado)
                 salvar_arquivos(lista_ativos)
+
+def remover_dependencia(lista_ativos):
+    if not lista_ativos:
+        print()
+        print("Não há ativos cadastrados")
+        return
+
+    print()
+    print(f"{TITULO}=-=-=-=-=- REMOVER DEPENDÊNCIAS -=-=-=-=-=-={NORMAL}")
+    print()
+    for ativo in lista_ativos:
+        print(f"Ativo: {ativo.nome} | ID: {ativo.id}")
+
+    print()
+
+    while True:
+        id_ativo_receptor_digitado = verificar_int("Digite o ID do ativo que recebe o risco: ")
+
+        ativo_receptor = None
+        for ativo_selecionado in lista_ativos:
+            if ativo_selecionado.id == id_ativo_receptor_digitado:
+                ativo_receptor = ativo_selecionado
+                for dependencia in ativo_selecionado.dependencias:
+                    id_transmissor = dependencia["AtivoIdBaseRisco"]
+                    fator_percentual = dependencia["Fator"]
+
+                    print()
+                    print(f"{TITULO}=-=-=-=-=- RELAÇÕES -=-=-=-=-=-={NORMAL}")
+                    print()
+                    print(f"Transmissor: ID {id_transmissor}")
+                    print(f"Risco recebido: {fator_percentual:.0%}")
+                    print()
+
+        if not ativo_receptor:
+            print("Esse ID não pertence a um ativo cadastrado.")
+            print()
+            continue
+        if not ativo_receptor.dependencias:
+            print("Esse ativo não possui dependências cadastradas.")
+            print()
+            continue
+        break
+
+    while True:
+        id_ativo_transmissor_digitado = verificar_int("Digite o ID do ativo transmissor do risco: ")
+
+        dependencia_encontrada = False
+        for dependencia in ativo_receptor.dependencias.copy():
+            if dependencia["AtivoIdBaseRisco"] == id_ativo_transmissor_digitado:
+                dependencia_encontrada = True
+                ativo_receptor.dependencias.remove(dependencia)
+                salvar_arquivos(lista_ativos)
+                print()
+                print(f"{VERDE}Dependência removida com sucesso!{NORMAL}")
+                return
+        if not dependencia_encontrada:
+            print("Essa dependência não foi encontrada")
+            print()
+            continue

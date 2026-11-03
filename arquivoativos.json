@@ -15,12 +15,7 @@
                 "CVE": "CVE-2026-0001"
             }
         ],
-        "Dependencias": [
-            {
-                "AtivoIdBaseRisco": 2,
-                "Fator": 0.5
-            }
-        ],
+        "Dependencias": [],
         "Vers\u00e3o Firmware": "N\u00e3o informado"
     },
     {
