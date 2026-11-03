@@ -376,7 +376,7 @@ def mostrar_riscos(lista_ativos):
     lista_dos_riscos_proprios = calculo_risco_proprio(lista_ativos)
 
     if lista_dos_riscos_efetivos is None:
-        print(f"{VERMELHO}Erro{NORMAL}: Não foi possível calcular o risco efetivo dos ativos. Verifique as dependências cadastradas.")
+        print(f"{VERMELHO}Erro{NORMAL}: Não foi possível calcular o risco efetivo. A matriz pode não ser invertível ou pode ser numericamente instável.")
         return
 
     for pos, ativo in enumerate(lista_ativos):

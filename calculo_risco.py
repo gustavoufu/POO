@@ -110,6 +110,11 @@ def calculo_risco_efetivo(lista_ativos):
     if np.isclose(determinante, 0, atol=1e-9):
         return None
 
+    numero_condicao = np.linalg.cond(A)
+
+    if not np.isfinite(numero_condicao) or numero_condicao > 1e12:
+        return None
+
     #A @ x = b
     b = calculo_risco_proprio(lista_ativos)
 
