@@ -273,6 +273,7 @@ def atualizar_ativo(lista_ativos):
 
                             # transferindo as vulnerabilidades do ativo antigo para o novo ativo
                             novo_ativo.vulnerabilidades = ativo.vulnerabilidades
+                            novo_ativo.dependencias = ativo.dependencias
 
                             posicao = lista_ativos.index(ativo)
                             lista_ativos[posicao] = novo_ativo
@@ -314,20 +315,20 @@ def remover_ativo(lista_ativos):
         print()
         
         encontrado = False
-        for ativo in lista_ativos:
-            if ativo.id == escolha_rem:
+        for ativo_selecionado in lista_ativos:
+            if ativo_selecionado.id == escolha_rem:
                 encontrado = True
 
                 print(f"{TITULO}=-=-=-=-=-= INFORMAÇÕES DO ATIVO =-=-=-=-=-=-={NORMAL}")
                 print()
-                ativo.exibir_detalhes()
+                ativo_selecionado.exibir_detalhes()
                 print()
 
-                exibe_vulnerabilidades_ativo(ativo)
+                exibe_vulnerabilidades_ativo(ativo_selecionado)
 
                 while True:
 
-                    if ativo.vulnerabilidades:
+                    if ativo_selecionado.vulnerabilidades:
                         print(f"{VERMELHO}Atenção{NORMAL}: ao excluir este ativo, todas as vulnerabilidades associadas a ele também serão removidas.")
                         confirmação = pedir_input("Confirma a exclusão? [S/N] ").lower()
                         print()
@@ -337,12 +338,12 @@ def remover_ativo(lista_ativos):
                         print()
                     if confirmação == "s":
 
-                        id_do_ativo_excluido = ativo.id
-                        for ativo in lista_ativos:
-                            for dependencia in ativo.dependencias:
-                                if dependencia["AtivoIdBaseRisco"] == id_do_ativo_excluido:
-                                    ativo.dependencias.remove(dependencia)
-                        lista_ativos.remove(ativo)
+                        id_excluido = ativo_selecionado.id
+                        for ativo_da_lista in lista_ativos:
+                            for dependencia in ativo_da_lista.dependencias.copy():
+                                if dependencia["AtivoIdBaseRisco"] == id_excluido:
+                                    ativo_da_lista.dependencias.remove(dependencia)
+                        lista_ativos.remove(ativo_selecionado)
 
                         if salvar_arquivos(lista_ativos):
                             print(f"{VERDE}Ativo removido com sucesso!{NORMAL}")
@@ -362,18 +363,26 @@ def remover_ativo(lista_ativos):
             continue
 
 def mostrar_riscos(lista_ativos):
+
+    if not lista_ativos:
+        print()
+        print("Nenhum ativo cadastrado.")
+        return
+
     print(f"{TITULO}=-=-=-=-=-=-=-=-=- RISCOS -=-=-=-=-=-=-=-=-=-={NORMAL}")
 
     lista_dos_riscos_efetivos = calculo_risco_efetivo(lista_ativos)
     lista_dos_riscos_proprios = calculo_risco_proprio(lista_ativos)
+
+    if lista_dos_riscos_efetivos is None:
+        print(f"{VERMELHO}Erro{NORMAL}: Não foi possível calcular o risco efetivo dos ativos. Verifique as dependências cadastradas.")
+        return
+
     for pos, ativo in enumerate(lista_ativos):
         print()
         print(f"Ativo: {ativo.nome}")
         print(f"Risco próprio: {lista_dos_riscos_proprios[pos]:.2f}")        
-        if lista_dos_riscos_efetivos is None:
-            print(f"{VERMELHO}Erro{NORMAL}: Não foi possível calcular o risco efetivo dos ativos. Verifique as dependências cadastradas.")
-        else:
-            print(f"Risco efetivo: {lista_dos_riscos_efetivos[pos]:.2f}")
+        print(f"Risco efetivo: {lista_dos_riscos_efetivos[pos]:.2f}")
 
 def cadastrar_dependencias(lista_ativos):
     if len(lista_ativos) >= 2:
@@ -421,7 +430,31 @@ def cadastrar_dependencias(lista_ativos):
             print(f"{VERMELHO}Esse ID não está cadastrado!{NORMAL}")
             continue
 
+    ativo_receptor = None
+    for ativo in lista_ativos:
+        if ativo.id == id_ativo_recebe_risco:
+            ativo_receptor = ativo
+            break
+
+    for dependencia in ativo_receptor.dependencias:
+        if dependencia["AtivoIdBaseRisco"] == id_ativo_transmite_risco:
+            print()
+            print("Essa dependência já existe e não pode ser sobrescrita.")
+            print("Exclua a dependência anterior para cadastrar outro fator.")
+            return
+
     fator_digitado = pedir_fator_dependencia()
+
+    soma_dos_fatores = 0
+
+    for dependencia in ativo_receptor.dependencias:
+        soma_dos_fatores += dependencia["Fator"]
+
+    if soma_dos_fatores + fator_digitado >= 1:
+        print()
+        print("Não foi possível cadastrar a dependência.")
+        print("A soma dos fatores recebidos pelo ativo deve ser menor que 1.")
+        return
 
     if id_ativo_recebe_risco and id_ativo_transmite_risco:
         for ativo in lista_ativos:

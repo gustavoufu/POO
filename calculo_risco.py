@@ -116,5 +116,3 @@ def calculo_risco_efetivo(lista_ativos):
     vetor_risco_total_final = np.linalg.solve(A, b)
 
     return vetor_risco_total_final
-
-calculo_risco_efetivo(lista_ativos)
