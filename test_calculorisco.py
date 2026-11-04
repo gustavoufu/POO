@@ -1,5 +1,5 @@
 import numpy as np  
-
+import json
 from classes import Notebook, Vulnerabilidade
 from calculo_risco import calculo_risco_proprio, matriz_dependencias, calculo_risco_efetivo
 
@@ -68,10 +68,6 @@ def test_calculo_risco_proprio_2_ativos():
     lista_de_ativos = [notebook1, notebook2]
 
     resultado = calculo_risco_proprio(lista_de_ativos)
-
-    print(notebook1.nome)
-    print(notebook2.nome)
-    print(resultado)
 
     resultado = list(resultado)
 
@@ -183,6 +179,40 @@ def test_risco_efeito_condicao_infinito():
     if not np.isfinite(numero_condicao) or numero_condicao > 1e12:
         return None
 
-    resultado = test_risco_efeito_condicao_infinito
+    resultado = "É estável"
 
     assert resultado == None
+
+def test_matriz_mal_condicionada():
+    
+    matriz = np.array([
+    [1, 0.999999999999],
+    [0.99999999999999, 1]
+    ])
+    
+    numero_condicao = np.linalg.cond(matriz)
+
+    if not np.isfinite(numero_condicao) or numero_condicao > 1e12:
+        return None
+
+    resultado = "É estável"
+    print(resultado)
+
+    assert resultado == None
+
+
+def test_testar_persistencia(tmp_path):
+
+    arquivo = tmp_path / "persistencia_teste"
+
+    notebook_teste = Notebook(5, "persistencia_teste", "Gustavinho", "TI", "linux")
+
+    notebook_em_dicionario = notebook_teste.retorna_dicionario()
+
+    notebook_em_json = json.dumps(notebook_em_dicionario)
+
+    arquivo.write_text(notebook_em_json)
+
+    arquivo_lido = arquivo.read_text()
+
+    assert notebook_em_json == arquivo_lido
