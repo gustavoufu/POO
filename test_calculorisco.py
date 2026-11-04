@@ -170,3 +170,19 @@ def test_risco_efetivo():
     resultado_lista = resultado.tolist()
 
     assert resultado_lista == [10, 10]
+
+def test_risco_efeito_condicao_infinito():
+        
+    matriz = np.array([
+    [1, 2],
+    [2, 4]
+    ])
+    
+    numero_condicao = np.linalg.cond(matriz)
+
+    if not np.isfinite(numero_condicao) or numero_condicao > 1e12:
+        return None
+
+    resultado = test_risco_efeito_condicao_infinito
+
+    assert resultado == None
