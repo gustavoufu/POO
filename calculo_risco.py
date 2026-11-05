@@ -1,7 +1,4 @@
-from dados import carregar_ativos
 import numpy as np
-
-lista_ativos = carregar_ativos()
 
 def cves_unicos(lista_ativos):
     cves = []

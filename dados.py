@@ -1,19 +1,19 @@
 import json
 from classes import Vulnerabilidade, Notebook, Servidor, Roteador, Aplicativo
 
-def salvar_arquivos(lista_ativos):
+def salvar_arquivos(lista_ativos, caminho_arquivo="arquivoativos.json"):
     try:
         ativos_em_dicionarios = [ativo.retorna_dicionario() for ativo in lista_ativos]
-        with open("arquivoativos.json", "w", encoding="utf-8") as arquivo_lista_de_ativos:
+        with open(caminho_arquivo, "w", encoding="utf-8") as arquivo_lista_de_ativos:
             json.dump(ativos_em_dicionarios, arquivo_lista_de_ativos, indent=4)
             return True
     except OSError:
         print("Não foi possível salvar no arquivo!")
         return False
 
-def carregar_ativos():
+def carregar_ativos(caminho_arquivo="arquivoativos.json"):
     try:
-        with open("arquivoativos.json", "r", encoding="utf-8") as arquivolista:
+        with open(caminho_arquivo, "r", encoding="utf-8") as arquivolista:
             ativos_em_dicionarios = json.load(arquivolista)
 
             lista_objetos_criados = []
