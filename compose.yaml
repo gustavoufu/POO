@@ -1,0 +1,8 @@
+services:
+  inventario:
+    build: .
+    image: sistema-inventario
+    stdin_open: true
+    tty: true
+    volumes:
+      - ./arquivoativos.json:/app/arquivoativos.json
