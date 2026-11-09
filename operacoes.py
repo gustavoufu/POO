@@ -1,5 +1,5 @@
 from calculo_risco import calculo_risco_efetivo, calculo_risco_proprio
-from modelos import TITULO, VERDE, VERMELHO, NORMAL
+from modelos import TITULO, VERDE, VERMELHO, NORMAL, TiposDeAtivos
 from dados import salvar_arquivos
 from validacoes import (verificar_int, pedir_input,
     exibir_tipos_de_ativos, pedir_tipo_de_ativo, exibe_vulnerabilidades_ativo, pedir_cvss, pedir_fator_dependencia)
@@ -36,21 +36,25 @@ def cadastrar_ativo(lista_ativos):
     setor_ativo = pedir_input("Digite o setor responsável: ")
     tipo_ativo = exibir_tipos_de_ativos() or pedir_tipo_de_ativo()
 
-    if tipo_ativo == 1:
-        sistema_operacional_ativo = pedir_input("Digite o sistema operacional do notebook: ")
-        ativo_objeto_novo = Notebook(id_ativo, nome_ativo, responsavel_ativo, setor_ativo, sistema_operacional_ativo)
+    tipo_ativo = TiposDeAtivos(tipo_ativo)
 
-    elif tipo_ativo == 2:
-        tipo_servidor_ativo = pedir_input("Digite o tipo do servidor [Físico, Virtual, Nuvem]: ")
-        ativo_objeto_novo = Servidor(id_ativo, nome_ativo, responsavel_ativo, setor_ativo, tipo_servidor_ativo)
+    classes_ativos = {
+      TiposDeAtivos.Notebook: Notebook,
+      TiposDeAtivos.Servidor: Servidor,
+      TiposDeAtivos.Roteador: Roteador,
+      TiposDeAtivos.Aplicativo: Aplicativo  
+    }
 
-    elif tipo_ativo == 3:
-        versao_firmware_ativo = pedir_input("Digite a versão do firmware do roteador: ")
-        ativo_objeto_novo = Roteador(id_ativo, nome_ativo, responsavel_ativo, setor_ativo, versao_firmware_ativo)
-        
-    elif tipo_ativo == 4:
-        versao_aplicativo = pedir_input("Digite a versão do aplicativo: ")
-        ativo_objeto_novo = Aplicativo(id_ativo, nome_ativo, responsavel_ativo, setor_ativo, versao_aplicativo)
+    classe_ativo = classes_ativos[tipo_ativo]
+
+    ativo_novo = classe_ativo(
+        id_ativo,
+        nome_ativo,
+        responsavel_ativo,
+        setor_ativo,
+    )
+
+    ativo_novo.pedir_detalhe()
 
     while True:
         escolha = pedir_input("Deseja cadastrar uma vulnerabilidade inicial? [S/N] ").lower()
@@ -63,7 +67,7 @@ def cadastrar_ativo(lista_ativos):
             cve = pedir_input("Digite o código CVE: ")
 
             vulne_nova = Vulnerabilidade(nome, descricao, categoria, severidade, status, cve)
-            ativo_objeto_novo.adicionar_vulnerabilidade(vulne_nova)
+            ativo_novo.adicionar_vulnerabilidade(vulne_nova)
             break
         elif escolha == "n":
             break 
@@ -72,7 +76,7 @@ def cadastrar_ativo(lista_ativos):
             continue
 
     print()
-    lista_ativos.append(ativo_objeto_novo)
+    lista_ativos.append(ativo_novo)
 
     if salvar_arquivos(lista_ativos):
         print(f"{VERDE}Ativo cadastrado com sucesso!{NORMAL}")

@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+from validacoes import pedir_input
 
 class Vulnerabilidade:
     def __init__(self, nome, descricao, categoria, severidade, status, codigo_cve="Não informado"):
@@ -72,9 +73,12 @@ class Ativo(ABC):
         pass
 
 class Notebook(Ativo):
-    def __init__(self, id, nome, responsavel, setor, sistema_operacional="Não informado"):
+    def __init__(self, id, nome, responsavel, setor):
         super().__init__(id, nome, responsavel, setor)
-        self.sistema_operacional = sistema_operacional
+        self.sistema_operacional = "Não informado"
+
+    def pedir_detalhe(self):
+        self.sistema_operacional = pedir_input("Digite o sistema operacional do notebook: ")
 
     def retorna_dicionario(self):
         dict_mae = super().retorna_dicionario()
@@ -89,9 +93,12 @@ class Notebook(Ativo):
         return 1.0
 
 class Servidor(Ativo):
-    def __init__(self, id, nome, responsavel, setor, tipo_servidor="Não informado"):
+    def __init__(self, id, nome, responsavel, setor):
         super().__init__(id, nome, responsavel, setor)
-        self.tipo_servidor = tipo_servidor
+        self.tipo_servidor = "Não informado"
+
+    def pedir_detalhe(self):
+        self.tipo_servidor = pedir_input("Digite o tipo do servidor [Físico, Virtual, Nuvem]: ")
 
     def retorna_dicionario(self):
         dict_mae = super().retorna_dicionario()
@@ -106,9 +113,12 @@ class Servidor(Ativo):
         return 1.3
 
 class Roteador(Ativo):
-    def __init__(self, id, nome, responsavel, setor, versao_firmware="Não informado"):
+    def __init__(self, id, nome, responsavel, setor):
         super().__init__(id, nome, responsavel, setor)
-        self.versao_firmware = versao_firmware
+        self.versao_firmware = pedir_input("Não informado")
+
+    def pedir_detalhe(self):
+        self.versao_firmware = pedir_input("Digite a versão do firmware do roteador: ")
 
     def retorna_dicionario(self):
         dict_mae = super().retorna_dicionario()
@@ -123,9 +133,12 @@ class Roteador(Ativo):
         return 1.2
     
 class Aplicativo(Ativo):
-    def __init__(self, id, nome, responsavel, setor, versao="Não informado"):
+    def __init__(self, id, nome, responsavel, setor):
         super().__init__(id, nome, responsavel, setor)
-        self.versao = versao
+        self.versao = "Não informado"
+
+    def pedir_detalhe(self):
+        self.versao = pedir_input("Digite a versão do aplicativo: ")
 
     def retorna_dicionario(self):
         dict_mae = super().retorna_dicionario()
