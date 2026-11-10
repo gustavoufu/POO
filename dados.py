@@ -15,19 +15,28 @@ def carregar_ativos(caminho_arquivo="arquivoativos.json"):
     try:
         with open(caminho_arquivo, "r", encoding="utf-8") as arquivolista:
             ativos_em_dicionarios = json.load(arquivolista)
-
             lista_objetos_criados = []
+
+            tipos_de_ativos = {
+                "Notebook": Notebook,
+                "Servidor": Servidor,
+                "Roteador": Roteador,
+                "Aplicativo": Aplicativo
+            }
+
+            detalhes_de_ativos = {
+                "Notebook": "Sistema operacional",
+                "Servidor": "Tipo_servidor",
+                "Roteador": "Versão Firmware",
+                "Aplicativo": "Versão"
+            }
+
             for ativo in ativos_em_dicionarios:
                 objeto_criado = None
-
-                if ativo["Tipo"] == "Notebook":
-                    objeto_criado = Notebook(ativo["Id"], ativo["Nome"], ativo["Responsavel"], ativo["Setor"], ativo["Sistema operacional"])
-                elif ativo["Tipo"] == "Servidor":
-                    objeto_criado = Servidor(ativo["Id"], ativo["Nome"], ativo["Responsavel"], ativo["Setor"], ativo["Tipo_servidor"])                
-                elif ativo["Tipo"] == "Roteador":
-                    objeto_criado = Roteador(ativo["Id"], ativo["Nome"], ativo["Responsavel"], ativo["Setor"], ativo["Versão Firmware"])
-                elif ativo["Tipo"] == "Aplicativo":
-                    objeto_criado = Aplicativo(ativo["Id"], ativo["Nome"], ativo["Responsavel"], ativo["Setor"], ativo["Versão"])
+                detalhe = ativo[detalhes_de_ativos[ativo["Tipo"]]]
+                objeto_criado = tipos_de_ativos[ativo["Tipo"]](ativo["Id"], ativo["Nome"], ativo["Responsavel"], ativo["Setor"])
+                if detalhe != "Não informado":
+                    objeto_criado.adicionar_detalhe(detalhe)
 
                 if objeto_criado:
                     for vulne in ativo["Vulnerabilidades"]:

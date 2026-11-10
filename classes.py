@@ -72,6 +72,10 @@ class Ativo(ABC):
     def fator_exposicao(self):
         pass
 
+    @abstractmethod
+    def adicionar_detalhe(self):
+        pass
+
 class Notebook(Ativo):
     def __init__(self, id, nome, responsavel, setor):
         super().__init__(id, nome, responsavel, setor)
@@ -91,6 +95,9 @@ class Notebook(Ativo):
 
     def fator_exposicao(self):
         return 1.0
+    
+    def adicionar_detalhe(self, detalhe):
+        self.sistema_operacional = detalhe
 
 class Servidor(Ativo):
     def __init__(self, id, nome, responsavel, setor):
@@ -111,6 +118,9 @@ class Servidor(Ativo):
 
     def fator_exposicao(self):
         return 1.3
+    
+    def adicionar_detalhe(self, detalhe):
+        self.tipo_servidor = detalhe
 
 class Roteador(Ativo):
     def __init__(self, id, nome, responsavel, setor):
@@ -132,6 +142,9 @@ class Roteador(Ativo):
     def fator_exposicao(self):
         return 1.2
     
+    def adicionar_detalhe(self, detalhe):
+        self.versao_firmware = detalhe
+    
 class Aplicativo(Ativo):
     def __init__(self, id, nome, responsavel, setor):
         super().__init__(id, nome, responsavel, setor)
@@ -151,3 +164,6 @@ class Aplicativo(Ativo):
 
     def fator_exposicao(self):
         return 1.1
+    
+    def adicionar_detalhe(self, detalhe):
+        self.versao = detalhe

@@ -239,57 +239,17 @@ def atualizar_ativo(lista_ativos):
                             print(f"{VERMELHO}Essa opção não está disponível!{NORMAL}")
                             continue
 
-                        elif escolha_atualizar == 1:
-                            print(f"OBS: O nome atual é {ativo.nome}")
-                            ativo.nome = pedir_input("Digite o novo nome do ativo: ")
-                            if salvar_arquivos(lista_ativos):
-                                print()
-                                print(f"{VERDE}Nome alterado com sucesso!{NORMAL}")
-                            
-
-                        elif escolha_atualizar == 2:
-                            print(f"OBS: O responsável atual é {ativo.responsavel}")
-                            ativo.responsavel = pedir_input("Digite o responsável pelo ativo: ")
-                            if salvar_arquivos(lista_ativos):
-                                print()
-                                print(f"{VERDE}Responsável alterado com sucesso!{NORMAL}")
-
-                        elif escolha_atualizar == 3:
-                            print(f"OBS: O setor responsável atual é {ativo.setor}")
-                            ativo.setor = pedir_input("Digite o setor responsável: ")
-                            if salvar_arquivos(lista_ativos):
-                                print()
-                                print(f"{VERDE}Setor alterado com sucesso!{NORMAL}")
-
-                        elif escolha_atualizar == 4:
-                            print(f"OBS: O ativo atual é do tipo {type(ativo).__name__}")
-                            print()
-                            exibir_tipos_de_ativos()
-                            novo_ativo_tipo = pedir_tipo_de_ativo()
-
-                            if novo_ativo_tipo == 1:
-                                novo_ativo = Notebook(ativo.id, ativo.nome, ativo.responsavel, ativo.setor)
-                            elif novo_ativo_tipo == 2:
-                                novo_ativo = Servidor(ativo.id, ativo.nome, ativo.responsavel, ativo.setor)
-                            elif novo_ativo_tipo == 3:
-                                novo_ativo = Roteador(ativo.id, ativo.nome, ativo.responsavel, ativo.setor)
-                            elif novo_ativo_tipo == 4:
-                                novo_ativo = Aplicativo(ativo.id, ativo.nome, ativo.responsavel, ativo.setor)
-
-                            # transferindo as vulnerabilidades do ativo antigo para o novo ativo
-                            novo_ativo.vulnerabilidades = ativo.vulnerabilidades
-                            novo_ativo.dependencias = ativo.dependencias
-
-                            posicao = lista_ativos.index(ativo)
-                            lista_ativos[posicao] = novo_ativo
-                            ativo = novo_ativo
-
-                            if salvar_arquivos(lista_ativos):
-                                print()
-                                print(f"{VERDE}Tipo do ativo alterado com sucesso!{NORMAL}")
-
                         elif escolha_atualizar == 5:
                             break
+
+                        opcoes_atualizar = {
+                            1: atualizar_nome,
+                            2: atualizar_responsavel,
+                            3: atualizar_setor,
+                            4: atualizar_tipo,
+                        }
+
+                        opcoes_atualizar[escolha_atualizar](ativo, lista_ativos)
 
             if encontrado:
                 break 
