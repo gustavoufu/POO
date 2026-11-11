@@ -1,1 +1,12 @@
-[]
+[
+    {
+        "Tipo": "Notebook",
+        "Id": 1,
+        "Nome": "t",
+        "Responsavel": "t",
+        "Setor": "t",
+        "Vulnerabilidades": [],
+        "Dependencias": [],
+        "Sistema operacional": "win11"
+    }
+]

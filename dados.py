@@ -17,36 +17,41 @@ def carregar_ativos(caminho_arquivo="arquivoativos.json"):
             ativos_em_dicionarios = json.load(arquivolista)
             lista_objetos_criados = []
 
-            tipos_de_ativos = {
-                "Notebook": Notebook,
-                "Servidor": Servidor,
-                "Roteador": Roteador,
-                "Aplicativo": Aplicativo
-            }
-
-            detalhes_de_ativos = {
-                "Notebook": "Sistema operacional",
-                "Servidor": "Tipo_servidor",
-                "Roteador": "Versão Firmware",
-                "Aplicativo": "Versão"
+            configuracoes_ativos = {
+                "Notebook": {
+                    "classe": Notebook,
+                    "detalhe": "Sistema operacional"
+                },
+                "Servidor": {
+                    "classe": Servidor,
+                    "detalhe": "Tipo_servidor"
+                },
+                "Roteador": {
+                    "classe": Roteador,
+                    "detalhe": "Versão Firmware"
+                },
+                "Aplicativo": {
+                    "classe": Aplicativo,
+                    "detalhe": "Versão"
+                },
             }
 
             for ativo in ativos_em_dicionarios:
-                objeto_criado = None
-                detalhe = ativo[detalhes_de_ativos[ativo["Tipo"]]]
-                objeto_criado = tipos_de_ativos[ativo["Tipo"]](ativo["Id"], ativo["Nome"], ativo["Responsavel"], ativo["Setor"])
-                if detalhe != "Não informado":
-                    objeto_criado.adicionar_detalhe(detalhe)
+                detalhe_do_ativo = ativo[configuracoes_ativos[ativo["Tipo"]]["detalhe"]]
+                classe_do_ativo = configuracoes_ativos[ativo["Tipo"]]["classe"]
 
-                if objeto_criado:
-                    for vulne in ativo["Vulnerabilidades"]:
-                        vulne_nova = Vulnerabilidade(vulne["Nome"], vulne["Descrição"], vulne["Categoria"], vulne["Severidade"], vulne["Status"], vulne["CVE"])
-                        objeto_criado.adicionar_vulnerabilidade(vulne_nova)
+                objeto_criado = classe_do_ativo(ativo["Id"], ativo["Nome"], ativo["Responsavel"], ativo["Setor"])
+                if detalhe_do_ativo != "Não informado":
+                    objeto_criado.adicionar_detalhe(detalhe_do_ativo)
 
-                    for dependencia in ativo.get("Dependencias", []):
-                        objeto_criado.adicionar_dependencia(dependencia["AtivoIdBaseRisco"], dependencia["Fator"])
+                for vulne in ativo["Vulnerabilidades"]:
+                    vulne_nova = Vulnerabilidade(vulne["Nome"], vulne["Descrição"], vulne["Categoria"], vulne["Severidade"], vulne["Status"], vulne["CVE"])
+                    objeto_criado.adicionar_vulnerabilidade(vulne_nova)
 
-                    lista_objetos_criados.append(objeto_criado)
+                for dependencia in ativo.get("Dependencias", []):
+                    objeto_criado.adicionar_dependencia(dependencia["AtivoIdBaseRisco"], dependencia["Fator"])
+
+                lista_objetos_criados.append(objeto_criado)
             return lista_objetos_criados
 
     except (FileNotFoundError, json.JSONDecodeError):
