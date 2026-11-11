@@ -125,7 +125,7 @@ class Servidor(Ativo):
 class Roteador(Ativo):
     def __init__(self, id, nome, responsavel, setor):
         super().__init__(id, nome, responsavel, setor)
-        self.versao_firmware = pedir_input("Não informado")
+        self.versao_firmware = "Não informado"
 
     def pedir_detalhe(self):
         self.versao_firmware = pedir_input("Digite a versão do firmware do roteador: ")
