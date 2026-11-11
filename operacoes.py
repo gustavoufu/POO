@@ -511,18 +511,17 @@ def atualizar_tipo(ativo, lista_ativos):
     print(f"OBS: O ativo atual é do tipo {type(ativo).__name__}")
     print()
     exibir_tipos_de_ativos()
-    novo_ativo_tipo = pedir_tipo_de_ativo()
+    tipo_escolhido = pedir_tipo_de_ativo()
 
-    if novo_ativo_tipo == 1:
-        novo_ativo = Notebook(ativo.id, ativo.nome, ativo.responsavel, ativo.setor)
-    elif novo_ativo_tipo == 2:
-        novo_ativo = Servidor(ativo.id, ativo.nome, ativo.responsavel, ativo.setor)
-    elif novo_ativo_tipo == 3:
-        novo_ativo = Roteador(ativo.id, ativo.nome, ativo.responsavel, ativo.setor)
-    elif novo_ativo_tipo == 4:
-        novo_ativo = Aplicativo(ativo.id, ativo.nome, ativo.responsavel, ativo.setor)
+    tipos_de_ativos = {
+        1: Notebook,
+        2: Servidor,
+        3: Roteador,
+        4: Aplicativo
+    }
 
-    # transferindo as vulnerabilidades do ativo antigo para o novo ativo
+    novo_ativo = tipos_de_ativos[tipo_escolhido](ativo.id, ativo.nome, ativo.responsavel, ativo.setor)
+
     novo_ativo.vulnerabilidades = ativo.vulnerabilidades
     novo_ativo.dependencias = ativo.dependencias
 
