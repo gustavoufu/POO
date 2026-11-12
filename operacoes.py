@@ -1,3 +1,4 @@
+import copy
 from calculo_risco import calculo_risco_efetivo, calculo_risco_proprio
 from modelos import TITULO, VERDE, VERMELHO, NORMAL, TiposDeAtivos
 from dados import salvar_arquivos
@@ -169,138 +170,115 @@ def consultar_ativo(lista_ativos):
             return
 
 def atualizar_ativo(lista_ativos):
-    if lista_ativos == []:
-        print()
-        print(f"{TITULO}-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-={NORMAL}")
-        print()
-        print("Não há ativos cadastrados!")
-
-    else:
-        print()
-        print(f"{TITULO}-=-=-=-=-=-=- ATIVOS CADASTRADOS -=-=-=-=-=-=-={NORMAL}")
-        print()
-        print("Qual ativo você deseja atualizar?")
-        print()
-
-        for ativo in lista_ativos:
-            print(f"ID:{ativo.id} - {ativo.nome}")
-            print()
-            
-        while True:
-            id_escolhido = verificar_int("Digite o ID do ativo que deseja atualizar: ")
-
-            encontrado = False
-            for ativo in lista_ativos:
-                if ativo.id == id_escolhido:
-                    encontrado = True
-                    while True:
-
-                        print()
-                        print(f"{TITULO}-=-=-=-=-=- ATUALIZAÇÃO DE ATIVO -=-=-=-=-=-={NORMAL}")
-                        print()
-                        print("O que deseja atualizar no ativo?")
-                        print()
-                        print("1 - Nome")
-                        print("2 - Responsável")
-                        print("3 - Setor")
-                        print("4 - Tipo")
-                        print("5 - Voltar ao menu principal")
-                        print()
-                        
-                        escolha_atualizar = verificar_int("Digite uma opção: ")
-                        print()
-
-                        if escolha_atualizar not in range(1, 6):
-                            print(f"{VERMELHO}Essa opção não está disponível!{NORMAL}")
-                            continue
-
-                        elif escolha_atualizar == 5:
-                            break
-
-                        opcoes_atualizar = {
-                            1: atualizar_nome,
-                            2: atualizar_responsavel,
-                            3: atualizar_setor,
-                            4: atualizar_tipo,
-                        }
-
-                        opcoes_atualizar[escolha_atualizar](ativo, lista_ativos)
-
-            if encontrado:
-                break 
-
-            if not encontrado:
-                print(f"{VERMELHO}Esse ID não está cadastrado!{NORMAL}")
-
-def remover_ativo(lista_ativos):
-    if lista_ativos == []:
+    if not lista_ativos:
         print()
         print(f"{TITULO}-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-={NORMAL}")
         print()
         print("Não há ativos cadastrados!")
         return
 
-    print()
-    print(f"{TITULO}-=-=-=-=-=- ATIVOS CADASTRADOS -=-=-=-=-=-=-={NORMAL}")
-    print()
-    print("Qual ativo você deseja remover?")
-    print()
-
-    for ativo in lista_ativos:
-        print(f"ID:{ativo.id} - {ativo.nome}")
+    listar_ativos(lista_ativos)
 
     while True:
         print()
-        escolha_rem = verificar_int("Digite o ID do ativo a ser removido: ")
+        id_digitado = verificar_int("Digite o ID do ativo que deseja atualizar (0 para voltar): ")
+        if id_digitado == 0:
+            break
+        ativo = buscar_ativo_por_id(id_digitado, lista_ativos)
+        if ativo is None:
+            print("Esse ativo não foi encontrado, tente novamente...")
+            continue
+
+        while True:
+            print()
+            print(f"{TITULO}-=-=-=-=-=- ATUALIZAÇÃO DE ATIVO -=-=-=-=-=-={NORMAL}")
+            print()
+            print("O que deseja atualizar no ativo?")
+            print()
+            print("1 - Nome")
+            print("2 - Responsável")
+            print("3 - Setor")
+            print("4 - Tipo")
+            print("5 - Voltar ao menu principal")
+            print()
+            
+            escolha_digitada = verificar_int("Digite uma opção: ")
+            print()
+
+            if escolha_digitada not in range(1, 6):
+                print(f"{VERMELHO}Essa opção não está disponível!{NORMAL}")
+                continue
+
+            elif escolha_digitada == 5:
+                break
+
+            opcoes_atualizar = {
+                1: atualizar_nome,
+                2: atualizar_responsavel,
+                3: atualizar_setor,
+                4: atualizar_tipo,
+            }
+
+            opcoes_atualizar[escolha_digitada](ativo, lista_ativos)
+
+            ativo = buscar_ativo_por_id(id_digitado, lista_ativos)
+        break
+
+def remover_ativo(lista_ativos):
+    if not lista_ativos:
         print()
-        
-        encontrado = False
-        for ativo_selecionado in lista_ativos:
-            if ativo_selecionado.id == escolha_rem:
-                encontrado = True
+        print(f"{TITULO}-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-={NORMAL}")
+        print()
+        print("Não há ativos cadastrados!")
+        return
 
-                print(f"{TITULO}=-=-=-=-=-= INFORMAÇÕES DO ATIVO =-=-=-=-=-=-={NORMAL}")
-                print()
-                ativo_selecionado.exibir_detalhes()
-                print()
+    listar_ativos(lista_ativos)
 
-                exibe_vulnerabilidades_ativo(ativo_selecionado)
-
-                while True:
-
-                    if ativo_selecionado.vulnerabilidades:
-                        print(f"{VERMELHO}Atenção{NORMAL}: ao excluir este ativo, todas as vulnerabilidades associadas a ele também serão removidas.")
-                        confirmação = pedir_input("Confirma a exclusão? [S/N] ").lower()
-                        print()
-                    else:
-                        print(f"{VERMELHO}Atenção{NORMAL}: você tem certeza de que deseja excluir este ativo?")
-                        confirmação = pedir_input("Confirma a exclusão? [S/N] ").lower()
-                        print()
-                    if confirmação == "s":
-
-                        id_excluido = ativo_selecionado.id
-                        for ativo_da_lista in lista_ativos:
-                            for dependencia in ativo_da_lista.dependencias.copy():
-                                if dependencia["AtivoIdBaseRisco"] == id_excluido:
-                                    ativo_da_lista.dependencias.remove(dependencia)
-                        lista_ativos.remove(ativo_selecionado)
-
-                        if salvar_arquivos(lista_ativos):
-                            print(f"{VERDE}Ativo removido com sucesso!{NORMAL}")
-                        break
-                    elif confirmação == "n":
-                        print("Exclusão cancelada")
-                        break
-                    else:
-                        print(f"{VERMELHO}Essa opção não está disponível, Tente novamente!{NORMAL}")
-                        print()
-                        continue
-
-        if encontrado: break
-
-        if not encontrado:
+    while True:
+        print()
+        id_digitado = verificar_int("Digite o ID do ativo a ser removido (0 para voltar): ")
+        if id_digitado == 0:
+            break
+        ativo = buscar_ativo_por_id(id_digitado, lista_ativos)
+        if ativo is None:
             print(f"{VERMELHO}Esse ID não foi encontrado!{NORMAL}")
             continue
+
+        print()
+        print(f"{TITULO}=-=-=-=-=-= INFORMAÇÕES DO ATIVO =-=-=-=-=-=-={NORMAL}")
+        print()
+        ativo.exibir_detalhes()
+        print()
+
+        exibe_vulnerabilidades_ativo(ativo)
+
+        while True:
+            print(f"{VERMELHO}Atenção{NORMAL}: ao excluir este ativo, "
+            "suas vulnerabilidades e dependências "
+            "também serão removidas.")
+            confirmacao = pedir_input("Confirma a exclusão? [S/N] ").lower()
+
+            if confirmacao not in ["s", "n"]:
+                print(f"{VERMELHO}Essa opção não está disponível, Tente novamente!{NORMAL}")
+                continue
+
+            if confirmacao == "n":
+                print("Exclusão cancelada")
+                break
+
+            backup_lista_ativos = copy.deepcopy(lista_ativos)
+            for ativo_da_lista in lista_ativos:
+                for dependencia in ativo_da_lista.dependencias.copy():
+                    if dependencia["AtivoIdBaseRisco"] == ativo.id:
+                        ativo_da_lista.dependencias.remove(dependencia)
+            lista_ativos.remove(ativo)
+
+            if salvar_arquivos(lista_ativos):
+                print()
+                print(f"{VERDE}Ativo removido com sucesso!{NORMAL}")
+            else:
+                lista_ativos[:] = backup_lista_ativos
+            return
 
 def mostrar_riscos(lista_ativos):
 
@@ -326,58 +304,38 @@ def mostrar_riscos(lista_ativos):
 
 def cadastrar_dependencias(lista_ativos):
     if len(lista_ativos) >= 2:
-        print()
-        print(f"{TITULO}=-=-=-=-=-=- ATIVOS CADASTRADOS -=-=-=-=-=-=-={NORMAL}")
-        print()
-        for ativo in lista_ativos:
-            print(f"Nome: {ativo.nome} | ID: {ativo.id}")
+        listar_ativos(lista_ativos)
         print()
     else:
         print()
         print("É necessário ter pelo menos 2 ativos cadastrados.")
         return
 
-
     while True: #ativo que recebe risco
-        id_ativo_recebe_risco = verificar_int("Digite o ID do ativo que receberá o risco: ")
-
-        encontrado = False
-        for ativo in lista_ativos:
-            if ativo.id == id_ativo_recebe_risco:
-                encontrado = True
-
-        if encontrado:
-            break
-        if not encontrado:
+        id_digitado = verificar_int("Digite o ID do ativo que receberá o risco (0 para voltar): ")
+        if id_digitado == 0:
+            return
+        ativo_recebe_risco = buscar_ativo_por_id(id_digitado, lista_ativos)
+        if ativo_recebe_risco is None:
             print(f"{VERMELHO}Esse ID não está cadastrado!{NORMAL}")
             continue
+        break
 
     while True: #ativo que transmite risco
-        id_ativo_transmite_risco = verificar_int("Digite o ID do ativo que transmitirá o risco: ")
-        if id_ativo_transmite_risco == id_ativo_recebe_risco:
-
-            print(f"{VERMELHO}Erro, o ID do ativo que transmite risco deve ser diferente do ID do ativo que recebe.{NORMAL}")
-            continue
-
-        encontrado = False
-        for ativo in lista_ativos:
-            if ativo.id == id_ativo_transmite_risco:
-                encontrado = True
-
-        if encontrado:
-            break
-        if not encontrado:
+        id_digitado = verificar_int("Digite o ID do ativo que transmitirá o risco (0 para voltar): ")
+        if id_digitado == 0:
+            return
+        ativo_transmite_risco = buscar_ativo_por_id(id_digitado, lista_ativos)
+        if ativo_transmite_risco is None:
             print(f"{VERMELHO}Esse ID não está cadastrado!{NORMAL}")
             continue
+        if ativo_transmite_risco == ativo_recebe_risco:
+            print(f"{VERMELHO}O ativo receptor e o ativo transmissor devem ser diferentes.{NORMAL}")
+            continue
+        break
 
-    ativo_receptor = None
-    for ativo in lista_ativos:
-        if ativo.id == id_ativo_recebe_risco:
-            ativo_receptor = ativo
-            break
-
-    for dependencia in ativo_receptor.dependencias:
-        if dependencia["AtivoIdBaseRisco"] == id_ativo_transmite_risco:
+    for dependencia in ativo_recebe_risco.dependencias:
+        if dependencia["AtivoIdBaseRisco"] == ativo_transmite_risco.id:
             print()
             print("Essa dependência já existe e não pode ser sobrescrita.")
             print("Exclua a dependência anterior para cadastrar outro fator.")
@@ -387,7 +345,7 @@ def cadastrar_dependencias(lista_ativos):
 
     soma_dos_fatores = 0
 
-    for dependencia in ativo_receptor.dependencias:
+    for dependencia in ativo_recebe_risco.dependencias:
         soma_dos_fatores += dependencia["Fator"]
 
     if soma_dos_fatores + fator_digitado >= 1:
@@ -396,11 +354,12 @@ def cadastrar_dependencias(lista_ativos):
         print("A soma dos fatores recebidos pelo ativo deve ser menor que 1.")
         return
 
-    if id_ativo_recebe_risco and id_ativo_transmite_risco:
-        for ativo in lista_ativos:
-            if ativo.id == id_ativo_recebe_risco:
-                ativo.adicionar_dependencia(id_ativo_transmite_risco, fator_digitado)
-                salvar_arquivos(lista_ativos)
+    ativo_recebe_risco.adicionar_dependencia(ativo_transmite_risco.id, fator_digitado)
+    if salvar_arquivos(lista_ativos):
+        print()
+        print(f"{VERDE}Dependência cadastrada com sucesso!{NORMAL}")
+    else:
+        ativo_recebe_risco.dependencias.pop()
 
 def remover_dependencia(lista_ativos):
     if not lista_ativos:

@@ -7,6 +7,7 @@ def verificar_int(mensagem):
             inteiro = int(input(mensagem))
         except (ValueError, TypeError):
             print(f"{VERMELHO}ERRO, digite um número inteiro válido...{NORMAL}")
+            print()
             continue
         else:
             return inteiro
