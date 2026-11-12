@@ -25,18 +25,13 @@ def cadastrar_ativo(lista_ativos):
     print()
     print(f"{TITULO}=-=-=-=-=- CADASTRO DE NOVO ATIVO -=-=-=-=-=-={NORMAL}")
     print()
-    if lista_ativos:
-        novo_id = max(ativo.id for ativo in lista_ativos) + 1
-    else:
-        novo_id = 1
+    novo_id = max((ativo.id for ativo in lista_ativos), default=0) + 1
 
-    id_ativo = novo_id
     nome_ativo = pedir_input("Digite o nome do ativo: ")
     responsavel_ativo = pedir_input("Digite o responsável pelo ativo: ")
     setor_ativo = pedir_input("Digite o setor responsável: ")
-    tipo_ativo = exibir_tipos_de_ativos() or pedir_tipo_de_ativo()
-
-    tipo_ativo = TiposDeAtivos(tipo_ativo)
+    exibir_tipos_de_ativos()
+    tipo_ativo = TiposDeAtivos(pedir_tipo_de_ativo())
 
     classes_ativos = {
       TiposDeAtivos.Notebook: Notebook,
@@ -48,7 +43,7 @@ def cadastrar_ativo(lista_ativos):
     classe_ativo = classes_ativos[tipo_ativo]
 
     ativo_novo = classe_ativo(
-        id_ativo,
+        novo_id,
         nome_ativo,
         responsavel_ativo,
         setor_ativo,
@@ -59,27 +54,21 @@ def cadastrar_ativo(lista_ativos):
     while True:
         escolha = pedir_input("Deseja cadastrar uma vulnerabilidade inicial? [S/N] ").lower()
         if escolha == "s":
-            nome = pedir_input("Digite um nome para a vulnerabilidade: ")
-            descricao = pedir_input("Digite uma descrição: ")
-            categoria = pedir_input("Digite uma categoria: ")
-            severidade = pedir_cvss()
-            status = pedir_input("Status de tratamento: ")
-            cve = pedir_input("Digite o código CVE: ")
-
-            vulne_nova = Vulnerabilidade(nome, descricao, categoria, severidade, status, cve)
-            ativo_novo.adicionar_vulnerabilidade(vulne_nova)
+            ativo_novo.adicionar_vulnerabilidade(criar_vulnerabilidade())
             break
         elif escolha == "n":
             break 
         else:
             print(f"{VERMELHO}Essa opção não está disponível!{NORMAL}")
-            continue
 
     print()
     lista_ativos.append(ativo_novo)
 
     if salvar_arquivos(lista_ativos):
         print(f"{VERDE}Ativo cadastrado com sucesso!{NORMAL}")
+    else:
+        lista_ativos.remove(ativo_novo)
+        print(f"{VERMELHO}Erro ao salvar o ativo!{NORMAL}")
 
 def cadastrar_vulnerabilidade(lista_ativos):
     if lista_ativos == []:
@@ -544,3 +533,13 @@ def exibir_ativos_e_vulnerabilidades(ativo):
     ativo.exibir_detalhes()
     print()
     exibe_vulnerabilidades_ativo(ativo)
+
+def criar_vulnerabilidade():
+    nome = pedir_input("Digite um nome para a vulnerabilidade: ")
+    descricao = pedir_input("Digite uma descrição: ")
+    categoria = pedir_input("Digite uma categoria: ")
+    severidade = pedir_cvss()
+    status = pedir_input("Status de tratamento: ")
+    cve = pedir_input("Digite o código CVE: ")
+
+    return Vulnerabilidade(nome, descricao, categoria, severidade, status, cve)
