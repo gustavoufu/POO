@@ -1,10 +1,19 @@
 import copy
+
 from calculo_risco import calculo_risco_efetivo, calculo_risco_proprio
 from modelos import TITULO, VERDE, VERMELHO, NORMAL, TiposDeAtivos
 from dados import salvar_arquivos
 from validacoes import (verificar_int, pedir_input,
     exibir_tipos_de_ativos, pedir_tipo_de_ativo, exibe_vulnerabilidades_ativo, pedir_cvss, pedir_fator_dependencia)
-from classes import *
+from classes import Aplicativo, Notebook, Roteador, Servidor, Vulnerabilidade
+
+
+classes_ativos = {
+    TiposDeAtivos.Notebook: Notebook,
+    TiposDeAtivos.Servidor: Servidor,
+    TiposDeAtivos.Roteador: Roteador,
+    TiposDeAtivos.Aplicativo: Aplicativo,
+}
 
 def mostrar_menu():
     print()
@@ -33,13 +42,6 @@ def cadastrar_ativo(lista_ativos):
     setor_ativo = pedir_input("Digite o setor responsável: ")
     exibir_tipos_de_ativos()
     tipo_ativo = TiposDeAtivos(pedir_tipo_de_ativo())
-
-    classes_ativos = {
-      TiposDeAtivos.Notebook: Notebook,
-      TiposDeAtivos.Servidor: Servidor,
-      TiposDeAtivos.Roteador: Roteador,
-      TiposDeAtivos.Aplicativo: Aplicativo  
-    }
 
     classe_ativo = classes_ativos[tipo_ativo]
 
@@ -80,7 +82,9 @@ def cadastrar_vulnerabilidade(lista_ativos):
 
     while True:
         print()
-        id_digitado = verificar_int("Digite o ID do ativo selecionado: ")
+        id_digitado = verificar_int("Digite o ID do ativo selecionado (0 para voltar): ")
+        if id_digitado == 0:
+            return
         print()
 
         ativo = buscar_ativo_por_id(id_digitado, lista_ativos)
@@ -179,6 +183,13 @@ def atualizar_ativo(lista_ativos):
 
     listar_ativos(lista_ativos)
 
+    opcoes_atualizar = {
+        1: atualizar_nome,
+        2: atualizar_responsavel,
+        3: atualizar_setor,
+        4: atualizar_tipo,
+    }
+
     while True:
         print()
         id_digitado = verificar_int("Digite o ID do ativo que deseja atualizar (0 para voltar): ")
@@ -211,13 +222,6 @@ def atualizar_ativo(lista_ativos):
 
             elif escolha_digitada == 5:
                 break
-
-            opcoes_atualizar = {
-                1: atualizar_nome,
-                2: atualizar_responsavel,
-                3: atualizar_setor,
-                4: atualizar_tipo,
-            }
 
             opcoes_atualizar[escolha_digitada](ativo, lista_ativos)
 
@@ -425,50 +429,61 @@ def remover_dependencia(lista_ativos):
 
 def atualizar_nome(ativo, lista_ativos):
     print(f"OBS: O nome atual é {ativo.nome}")
+    backup_nome = ativo.nome
     ativo.nome = pedir_input("Digite o novo nome do ativo: ")
     if salvar_arquivos(lista_ativos):
         print()
         print(f"{VERDE}Nome alterado com sucesso!{NORMAL}")
+    else:
+        ativo.nome = backup_nome
 
 def atualizar_responsavel(ativo, lista_ativos):
     print(f"OBS: O responsável atual é {ativo.responsavel}")
+    backup_responsavel = ativo.responsavel
     ativo.responsavel = pedir_input("Digite o responsável pelo ativo: ")
     if salvar_arquivos(lista_ativos):
         print()
         print(f"{VERDE}Responsável alterado com sucesso!{NORMAL}")
+    else:
+        ativo.responsavel = backup_responsavel
 
 def atualizar_setor(ativo, lista_ativos):
     print(f"OBS: O setor responsável atual é {ativo.setor}")
+    backup_setor = ativo.setor
     ativo.setor = pedir_input("Digite o setor responsável: ")
     if salvar_arquivos(lista_ativos):
         print()
         print(f"{VERDE}Setor alterado com sucesso!{NORMAL}")
+    else:
+        ativo.setor = backup_setor
 
 def atualizar_tipo(ativo, lista_ativos):
+    backup_ativo = ativo
     print(f"OBS: O ativo atual é do tipo {type(ativo).__name__}")
     print()
     exibir_tipos_de_ativos()
-    tipo_escolhido = pedir_tipo_de_ativo()
 
-    tipos_de_ativos = {
-        1: Notebook,
-        2: Servidor,
-        3: Roteador,
-        4: Aplicativo
-    }
+    tipo_escolhido = TiposDeAtivos(pedir_tipo_de_ativo())
+    classe_escolhida = classes_ativos[tipo_escolhido]
 
-    novo_ativo = tipos_de_ativos[tipo_escolhido](ativo.id, ativo.nome, ativo.responsavel, ativo.setor)
+    if classe_escolhida is type(ativo):
+        print()
+        print(f"{VERMELHO}ERRO:{NORMAL} O ativo já é do tipo {type(ativo).__name__}")
+        return
 
+    novo_ativo = classe_escolhida(ativo.id, ativo.nome, ativo.responsavel, ativo.setor)
     novo_ativo.vulnerabilidades = ativo.vulnerabilidades
     novo_ativo.dependencias = ativo.dependencias
+    novo_ativo.pedir_detalhe()
 
     posicao = lista_ativos.index(ativo)
     lista_ativos[posicao] = novo_ativo
-    ativo = novo_ativo
 
     if salvar_arquivos(lista_ativos):
         print()
         print(f"{VERDE}Tipo do ativo alterado com sucesso!{NORMAL}")
+    else:
+        lista_ativos[posicao] = backup_ativo
 
 def buscar_ativo_por_id(id_do_ativo, lista_ativos):
     for ativo in lista_ativos:
