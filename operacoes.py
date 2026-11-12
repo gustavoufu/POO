@@ -71,54 +71,44 @@ def cadastrar_ativo(lista_ativos):
         print(f"{VERMELHO}Erro ao salvar o ativo!{NORMAL}")
 
 def cadastrar_vulnerabilidade(lista_ativos):
-    if lista_ativos == []:
+    if not lista_ativos:
         print("Não há ativos cadastrados!")
         return
-    else:
+    
+    listar_ativos(lista_ativos)
+
+    while True:
         print()
-        print(f"{TITULO}=-=-=-=-=-=- ATIVOS CADASTRADOS -=-=-=-=-=-=-={NORMAL}")
+        id_digitado = verificar_int("Digite o ID do ativo selecionado: ")
         print()
-        for ativo in lista_ativos:
-            print(f"ID: {ativo.id} | {ativo.nome}")
 
-        while True:
+        ativo = buscar_ativo_por_id(id_digitado, lista_ativos)
+        if ativo is None:
+            print("Esse ativo não foi encontrado, tente novamente...")
+            continue
+
+        vulnerabilidade = criar_vulnerabilidade()
+        ativo.adicionar_vulnerabilidade(vulnerabilidade)
+
+        if salvar_arquivos(lista_ativos):
             print()
-            id_digitado = verificar_int("Digite o ID do ativo selecionado: ")
-            print()
-
-            ativo = buscar_ativo_por_id(id_digitado, lista_ativos)
-            if ativo is None:
-                print("Esse ativo não foi encontrado, tente novamente...")
-                continue
-
-            nome = pedir_input("Digite um nome para a vulnerabilidade: ")
-            descricao = pedir_input("Digite uma descrição: ")
-            categoria = pedir_input("Digite uma categoria: ")
-            severidade = pedir_cvss()
-            status = pedir_input("Status de tratamento: ")
-            cve = pedir_input("Digite o código CVE: ")
-
-            vulne_nova = Vulnerabilidade(nome, descricao, categoria, severidade, status, cve)
-
-            ativo.adicionar_vulnerabilidade(vulne_nova)
-
-            if salvar_arquivos(lista_ativos):
-                print()
-                print(f"{VERDE}Vulnerabilidade cadastrada com sucesso!{NORMAL}")
-            break
+            print(f"{VERDE}Vulnerabilidade cadastrada com sucesso!{NORMAL}")
+        else:
+            ativo.vulnerabilidades.remove(vulnerabilidade)
+            print(f"{VERMELHO}Erro ao salvar a vulnerabilidade!{NORMAL}")
+        break
 
 def listar_ativos(lista_ativos):
     print()
-    if lista_ativos == []:
-        print(f"{TITULO}-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-={NORMAL}")
-        print()
+    print(f"{TITULO}=-=-=-=-=-=- ATIVOS CADASTRADOS -=-=-=-=-=-=-={NORMAL}")
+    print()
+
+    if not lista_ativos:
         print("Não há ativos cadastrados!")
         return
-    else:
-        print(f"{TITULO}=-=-=-=-=-=- ATIVOS CADASTRADOS -=-=-=-=-=-=-={NORMAL}")
-        print()
-        for ativo in lista_ativos:
-            print(f"ID:{ativo.id} - {ativo.nome}")
+    
+    for ativo in lista_ativos:
+        print(f"ID:{ativo.id} - {ativo.nome}")
 
 def consultar_ativo(lista_ativos):
     if not lista_ativos:
