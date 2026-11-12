@@ -367,58 +367,61 @@ def remover_dependencia(lista_ativos):
         print("Não há ativos cadastrados")
         return
 
-    print()
-    print(f"{TITULO}=-=-=-=-=- REMOVER DEPENDÊNCIAS -=-=-=-=-=-={NORMAL}")
-    print()
-    for ativo in lista_ativos:
-        print(f"Ativo: {ativo.nome} | ID: {ativo.id}")
-
-    print()
+    listar_ativos(lista_ativos)
 
     while True:
-        id_ativo_receptor_digitado = verificar_int("Digite o ID do ativo que recebe o risco: ")
-
-        ativo_receptor = None
-        for ativo_selecionado in lista_ativos:
-            if ativo_selecionado.id == id_ativo_receptor_digitado:
-                ativo_receptor = ativo_selecionado
-                for dependencia in ativo_selecionado.dependencias:
-                    id_transmissor = dependencia["AtivoIdBaseRisco"]
-                    fator_percentual = dependencia["Fator"]
-
-                    print()
-                    print(f"{TITULO}=-=-=-=-=- RELAÇÕES -=-=-=-=-=-={NORMAL}")
-                    print()
-                    print(f"Transmissor: ID {id_transmissor}")
-                    print(f"Risco recebido: {fator_percentual:.0%}")
-                    print()
-
-        if not ativo_receptor:
+        print()
+        id_digitado = verificar_int("Digite o ID do ativo que recebe o risco (0 para voltar) ")
+        if id_digitado == 0:
+            return
+        ativo_recebe_risco = buscar_ativo_por_id(id_digitado, lista_ativos)
+        if ativo_recebe_risco is None:
             print("Esse ID não pertence a um ativo cadastrado.")
             print()
             continue
-        if not ativo_receptor.dependencias:
-            print("Esse ativo não possui dependências cadastradas.")
+
+        if not ativo_recebe_risco.dependencias:
+            print("Esse ativo não possui dependências cadastradas, tente novamente...")
             print()
             continue
         break
 
-    while True:
-        id_ativo_transmissor_digitado = verificar_int("Digite o ID do ativo transmissor do risco: ")
+    print()
+    print(f"{TITULO}=-=-=-=-=- RELAÇÕES -=-=-=-=-=-={NORMAL}")
+    print()
 
-        dependencia_encontrada = False
-        for dependencia in ativo_receptor.dependencias.copy():
-            if dependencia["AtivoIdBaseRisco"] == id_ativo_transmissor_digitado:
-                dependencia_encontrada = True
-                ativo_receptor.dependencias.remove(dependencia)
-                salvar_arquivos(lista_ativos)
-                print()
-                print(f"{VERDE}Dependência removida com sucesso!{NORMAL}")
-                return
-        if not dependencia_encontrada:
-            print("Essa dependência não foi encontrada")
+    for dependencia in ativo_recebe_risco.dependencias:
+        id_transmissor = dependencia["AtivoIdBaseRisco"]
+        fator_percentual = dependencia["Fator"]
+
+        print(f"Transmissor: ID {id_transmissor}")
+        print(f"Risco recebido: {fator_percentual:.0%}")
+        print()
+
+    ids_transmissores = [dependencia["AtivoIdBaseRisco"] for dependencia in ativo_recebe_risco.dependencias]
+
+    while True:
+        id_digitado = verificar_int("Digite o ID do ativo transmissor do risco (0 para voltar): ")
+        if id_digitado == 0:
+            return
+        if id_digitado not in ids_transmissores:
+            print("Esse ID não pertence a uma dependência deste ativo.")
             print()
             continue
+        break
+
+    for dependencia in ativo_recebe_risco.dependencias.copy():
+        if dependencia["AtivoIdBaseRisco"] == id_digitado:
+            dependencia_removida = dependencia
+            ativo_recebe_risco.dependencias.remove(dependencia)
+            break
+
+    if salvar_arquivos(lista_ativos):
+        print()
+        print(f"{VERDE}Dependência removida com sucesso!{NORMAL}")
+        return
+    else:
+        ativo_recebe_risco.dependencias.append(dependencia_removida)
 
 def atualizar_nome(ativo, lista_ativos):
     print(f"OBS: O nome atual é {ativo.nome}")
