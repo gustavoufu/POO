@@ -94,35 +94,29 @@ def cadastrar_vulnerabilidade(lista_ativos):
 
         while True:
             print()
-            escolha_id = verificar_int("Digite o ID do ativo selecionado: ")
+            id_digitado = verificar_int("Digite o ID do ativo selecionado: ")
             print()
-            encontrado = False
-            for ativo in lista_ativos:
-                if ativo.id == escolha_id:
-                    encontrado = True
 
-                    nome = pedir_input("Digite um nome para a vulnerabilidade: ")
-                    descricao = pedir_input("Digite uma descrição: ")
-                    categoria = pedir_input("Digite uma categoria: ")
-                    severidade = pedir_cvss()
-                    status = pedir_input("Status de tratamento: ")
-                    cve = pedir_input("Digite o código CVE: ")
+            ativo = buscar_ativo_por_id(id_digitado, lista_ativos)
+            if ativo is None:
+                print("Esse ativo não foi encontrado, tente novamente...")
+                continue
 
-                    vulne_nova = Vulnerabilidade(nome, descricao, categoria, severidade, status, cve)
+            nome = pedir_input("Digite um nome para a vulnerabilidade: ")
+            descricao = pedir_input("Digite uma descrição: ")
+            categoria = pedir_input("Digite uma categoria: ")
+            severidade = pedir_cvss()
+            status = pedir_input("Status de tratamento: ")
+            cve = pedir_input("Digite o código CVE: ")
 
-                    ativo.adicionar_vulnerabilidade(vulne_nova)
+            vulne_nova = Vulnerabilidade(nome, descricao, categoria, severidade, status, cve)
 
-                    if salvar_arquivos(lista_ativos):
-                        print()
-                        print(f"{VERDE}Vulnerabilidade cadastrada com sucesso!{NORMAL}")
-                    break
-                
-            if encontrado:
-                break
+            ativo.adicionar_vulnerabilidade(vulne_nova)
 
-            if not encontrado:
-                    print(f"{VERMELHO}Esse ID não está cadastrado!{NORMAL}")
-                    continue 
+            if salvar_arquivos(lista_ativos):
+                print()
+                print(f"{VERDE}Vulnerabilidade cadastrada com sucesso!{NORMAL}")
+            break
 
 def listar_ativos(lista_ativos):
     print()
@@ -138,59 +132,61 @@ def listar_ativos(lista_ativos):
             print(f"ID:{ativo.id} - {ativo.nome}")
 
 def consultar_ativo(lista_ativos):
-    if lista_ativos == []:
+    if not lista_ativos:
         print()
         print("Não há ativos cadastrados!")
         return
-    else:
+    
+    while True:
         print()
         print(f"{TITULO}========== OPCÕES =========={NORMAL}")
         print()
         print("1 - Buscar por ID")
         print("2 - Buscar por Nome")
-        print("3 - Voltar ao menu principal")
+        print("3 - Listar todos os ativos")
+        print("4 - Voltar ao menu principal")
         print()
-        
-        while True:
-            busca_opcao = verificar_int("Escolha uma opção: ")
-            if busca_opcao not in range(1, 4):
-                print(f"{VERMELHO}Essa opção não está disponível, Tente novamente!{NORMAL}")
-                continue
-            else: break
+
+        busca_opcao = verificar_int("Escolha uma opção: ")
+        if busca_opcao not in range(1, 5):
+            print(f"{VERMELHO}Essa opção não está disponível, Tente novamente!{NORMAL}")
+            continue
 
         if busca_opcao == 1:
-            id_digitado = verificar_int("Digite o ID do ativo que deseja buscar: ")
-            print()
-            if id_digitado not in [ativo.id for ativo in lista_ativos]:
-                print(f"{VERMELHO}Esse ID não foi encontrado!{NORMAL}")
-                return
-            else:
-                for ativo in lista_ativos:
-                    if ativo.id == id_digitado:
-
-                        print(f"{TITULO}-=-=-=-=-=-=- ATIVO ENCONTRADO -=-=-=-=-=-=-=-{NORMAL}")
-                        print()
-                        ativo.exibir_detalhes()
-                        print()
-                        exibe_vulnerabilidades_ativo(ativo)
+            while True:
+                id_digitado = verificar_int("Digite o ID do ativo que deseja buscar (0 para voltar): ")
+                if id_digitado == 0:
+                    break   
+                print()
+                ativo = buscar_ativo_por_id(id_digitado, lista_ativos)
+                if ativo is None:
+                    print("Esse ativo não foi encontrado, tente novamente...")
+                    continue
+                exibir_ativos_e_vulnerabilidades(ativo)
+                input("\nPressione Enter para voltar ao menu de consulta...")
+                break
 
         elif busca_opcao == 2: 
-            nome_digitado = pedir_input("Digite o nome do ativo que deseja buscar: ").strip()
-            print()
-            if nome_digitado.lower() not in (ativo.nome.lower() for ativo in lista_ativos):
-                print(f"{VERMELHO}Esse nome não pertence a um ativo cadastrado!{NORMAL}")
-                return
-            else:
-                for ativo in lista_ativos:
-                    if ativo.nome.lower() == nome_digitado.lower():
-                        
-                        print(f"{TITULO}-=-=-=-=-=-=- ATIVO ENCONTRADO -=-=-=-=-=-=-=-{NORMAL}")
-                        print()
-                        ativo.exibir_detalhes()
-                        print()
-                        exibe_vulnerabilidades_ativo(ativo)
+            while True:
+                nome_digitado = pedir_input("Digite o nome do ativo que deseja buscar (0 para voltar): ")
+                if nome_digitado == "0":
+                    break
+                print()
+                ativos = buscar_ativo_por_nome(nome_digitado, lista_ativos)
+                if not ativos:
+                    print("Não foi encontrado nenhum ativo com esse nome, tente novamente...")
+                    continue
+
+                for ativo in ativos:
+                    exibir_ativos_e_vulnerabilidades(ativo)
+                input("\nPressione Enter para voltar ao menu de consulta...")
+                break
 
         elif busca_opcao == 3:
+            listar_ativos(lista_ativos)
+            input("\nPressione Enter para voltar...")
+
+        elif busca_opcao == 4:
             return
 
 def atualizar_ativo(lista_ativos):
@@ -532,3 +528,19 @@ def atualizar_tipo(ativo, lista_ativos):
     if salvar_arquivos(lista_ativos):
         print()
         print(f"{VERDE}Tipo do ativo alterado com sucesso!{NORMAL}")
+
+def buscar_ativo_por_id(id_do_ativo, lista_ativos):
+    for ativo in lista_ativos:
+        if ativo.id == id_do_ativo:
+            return ativo
+    return None
+
+def buscar_ativo_por_nome(nome_do_ativo, lista_ativos):
+    return [ativo for ativo in lista_ativos if nome_do_ativo.lower() == ativo.nome.lower()]
+
+def exibir_ativos_e_vulnerabilidades(ativo):
+    print(f"{TITULO}-=-=-=-=-=-=- ATIVO ENCONTRADO -=-=-=-=-=-=-=-{NORMAL}")
+    print()
+    ativo.exibir_detalhes()
+    print()
+    exibe_vulnerabilidades_ativo(ativo)
