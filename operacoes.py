@@ -18,9 +18,6 @@ classes_ativos = {
 
 def cadastrar_ativo(lista_ativos):
     limpar_terminal()
-    print()
-    print(f"{TITULO}=-=-=-=-=- CADASTRO DE NOVO ATIVO -=-=-=-=-=-={NORMAL}")
-    print()
     novo_id = max((ativo.id for ativo in lista_ativos), default=0) + 1
 
     nome_ativo = pedir_input("Digite o nome do ativo: ")
@@ -170,7 +167,7 @@ def consultar_ativo(lista_ativos):
             limpar_terminal()
 
         elif busca_opcao == 4:
-            limpar_terminal
+            limpar_terminal()
             return
 
 def atualizar_ativo(lista_ativos):

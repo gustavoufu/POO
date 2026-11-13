@@ -1,6 +1,5 @@
-import os
+import subprocess
 from InquirerPy import inquirer
-from modelos import TITULO, NORMAL
 
 def selecionar_opcao_menu():
 
@@ -22,9 +21,10 @@ def selecionar_opcao_menu():
     ).execute()
 
     return opcao
-    
-if __name__ == "__main__":
-    print(selecionar_opcao_menu())
 
 def limpar_terminal():
-       os.system('cls' if os.name == 'nt' else 'clear')
+    subprocess.run(["clear"], check=False)
+
+if __name__ == "__main__":
+    print(selecionar_opcao_menu())
+    

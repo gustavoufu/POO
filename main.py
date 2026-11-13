@@ -8,9 +8,10 @@ from operacoes import (
     remover_ativo,
     mostrar_riscos,
     cadastrar_dependencias,
-    remover_dependencia)
+    remover_dependencia,
+    )
 from dados import carregar_ativos
-from interface import selecionar_opcao_menu
+from interface import selecionar_opcao_menu, limpar_terminal
 
 lista_ativos = carregar_ativos()
 
@@ -28,6 +29,7 @@ opcoes = {
 
 while True:
 
+    limpar_terminal()
     opcao = selecionar_opcao_menu()
 
     if opcao == 10:
