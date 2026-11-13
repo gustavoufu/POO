@@ -1,5 +1,6 @@
 from abc import ABC, abstractmethod
 from validacoes import pedir_input
+from interface import escolher_opcao
 
 class Vulnerabilidade:
     def __init__(self, nome, descricao, categoria, severidade, status, codigo_cve="Não informado"):
@@ -105,7 +106,13 @@ class Servidor(Ativo):
         self.tipo_servidor = "Não informado"
 
     def pedir_detalhe(self):
-        self.tipo_servidor = pedir_input("Digite o tipo do servidor [Físico, Virtual, Nuvem]: ")
+        tipos_servidores = [
+            {"name": "Físico", "value": "Físico"},
+            {"name": "Virtual", "value": "Virtual"},
+            {"name": "Nuvem", "value": "Nuvem"}
+        ]
+
+        self.tipo_servidor = escolher_opcao("Selecione o tipo do servidor", tipos_servidores)
 
     def retorna_dicionario(self):
         dict_mae = super().retorna_dicionario()

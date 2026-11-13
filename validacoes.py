@@ -1,5 +1,5 @@
 from modelos import VERMELHO, TITULO, NORMAL, TiposDeAtivos
-from classes import *
+from interface import escolher_opcao
 
 def verificar_int(mensagem):
     while True:
@@ -47,28 +47,20 @@ def pedir_severidade():
         else:
             return severidade
 
-def exibir_tipos_de_ativos():
-    print("")
-    print(f"{TITULO}-=-=-=-=- TIPO DE ATIVOS DISPONÍVEIS -=-=-=-=-{NORMAL}")
-    print("")
-    for tipo in TiposDeAtivos:
-        print(f"{tipo.value} - {tipo.name}")
+def pedir_tipo_de_ativo(ativo=None, mostrar_atual=False):
+    tipos_de_ativos = [
+        {"name": "Notebook", "value": TiposDeAtivos.Notebook},
+        {"name": "Servidor", "value": TiposDeAtivos.Servidor},
+        {"name": "Roteador", "value": TiposDeAtivos.Roteador},
+        {"name": "Aplicativo", "value": TiposDeAtivos.Aplicativo}
+    ]
 
-def pedir_tipo_de_ativo(ativo="", mostrar_atual=False):
-    while True:
-        try:
-            print("")
-            if mostrar_atual:
-                print(f"OBS: O ativo atual é do tipo {type(ativo).__name__}")
-            tipo = int(input(f"Digite o tipo do ativo [1 até {len(TiposDeAtivos)}]: "))
-            if tipo not in range(1, len(TiposDeAtivos) + 1):
-                print(f"{VERMELHO}O número digitado não é um valor de 1 a {len(TiposDeAtivos)}{NORMAL}")
-                continue
-        except (ValueError, TypeError):
-            print(f"{VERMELHO}ERRO, digite um número inteiro válido...{NORMAL}")
-            continue
-        else:
-            return tipo
+    if mostrar_atual:
+        for opcao in tipos_de_ativos:
+            if opcao["value"].name == type(ativo).__name__:
+                opcao["name"] += "  ← tipo atual"
+
+    return escolher_opcao("Escolha um tipo para o ativo", tipos_de_ativos)
 
 def exibe_vulnerabilidades_ativo(ativo):
     if len(ativo.vulnerabilidades) == 0:
@@ -97,6 +89,6 @@ def pedir_fator_dependencia():
                 continue
         except (ValueError, TypeError):
             print("ERRO, digite um número entre 0 e 1 válido...")
-
+            
 if __name__ == "__main__":
     pedir_fator_dependencia()

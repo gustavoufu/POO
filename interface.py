@@ -16,10 +16,9 @@ estilo_menu = get_style(
 
 def selecionar_opcao_menu():
 
-    opcao = inquirer.select(
-        message="",
+    return inquirer.select(
+        message="── GERENCIAMENTO DE ATIVOS ─────────────────────────",
         choices=[
-        Separator("── GERENCIAMENTO DE ATIVOS ─────────────────────────"),
         Separator(""),
         {"name": "1 - Cadastrar Ativo", "value": 1},
         {"name": "2 - Cadastrar Vulnerabilidade", "value": 2},
@@ -34,7 +33,7 @@ def selecionar_opcao_menu():
         {"name": "8 - Cadastrar Dependências", "value": 8},
         {"name": "9 - Remover Dependência", "value": 9},
         {"name": "10 - Sair", "value": 10},
-        Separator(" "),
+        Separator(""),
         Separator("────────────────────────────────────────────────────"),
         Separator("↑↓ Navegar    Enter Selecionar"),
     ],
@@ -43,11 +42,23 @@ def selecionar_opcao_menu():
     style=estilo_menu,
     pointer="❯",
     qmark="",
+    amark="",
     instruction="",
     show_cursor=False,
+    default=0
     ).execute()
 
-    return opcao
+def escolher_opcao(mensagem, escolhas):
+    return inquirer.select(
+        message=mensagem,
+        choices=escolhas,
+        style=estilo_menu,
+        qmark="",
+        amark="",
+        pointer="❯",
+        show_cursor=False,
+        default=0
+    ).execute()
 
 def limpar_terminal():
     subprocess.run(["clear"], check=False)

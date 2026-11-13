@@ -4,9 +4,10 @@ from calculo_risco import calculo_risco_efetivo, calculo_risco_proprio
 from modelos import TITULO, VERDE, VERMELHO, AMARELO, NORMAL, TiposDeAtivos
 from dados import salvar_arquivos
 from validacoes import (verificar_int, pedir_input,
-    exibir_tipos_de_ativos, pedir_tipo_de_ativo, exibe_vulnerabilidades_ativo, pedir_cvss, pedir_fator_dependencia)
+     pedir_tipo_de_ativo, exibe_vulnerabilidades_ativo, pedir_cvss, pedir_fator_dependencia)
 from classes import Aplicativo, Notebook, Roteador, Servidor, Vulnerabilidade
-from interface import limpar_terminal
+from interface import limpar_terminal, escolher_opcao
+from InquirerPy.separator import Separator
 
 
 classes_ativos = {
@@ -23,7 +24,7 @@ def cadastrar_ativo(lista_ativos):
     nome_ativo = pedir_input("Digite o nome do ativo: ")
     responsavel_ativo = pedir_input("Digite o responsável pelo ativo: ")
     setor_ativo = pedir_input("Digite o setor responsável: ")
-    exibir_tipos_de_ativos()
+    print()
     tipo_ativo = TiposDeAtivos(pedir_tipo_de_ativo(mostrar_atual=False))
 
     classe_ativo = classes_ativos[tipo_ativo]
@@ -64,31 +65,22 @@ def cadastrar_vulnerabilidade(lista_ativos):
         print("Não há ativos cadastrados!")
         aguardar_retorno_menu()
         return
-    
-    listar_ativos(lista_ativos, aguardar=False)
 
-    while True:
+    ativos_em_opcoes = ativos_em_opcoes_interface(lista_ativos)
+    ativo = escolher_opcao("Escolha um ativo:", ativos_em_opcoes)
+    if ativo == None:
+        return
+    print()
+
+    vulnerabilidade = criar_vulnerabilidade()
+    ativo.adicionar_vulnerabilidade(vulnerabilidade)
+
+    if salvar_arquivos(lista_ativos):
         print()
-        id_digitado = verificar_int("Digite o ID do ativo selecionado (0 para voltar): ")
-        if id_digitado == 0:
-            return
-        print()
-
-        ativo = buscar_ativo_por_id(id_digitado, lista_ativos)
-        if ativo is None:
-            print("Esse ativo não foi encontrado, tente novamente...")
-            continue
-
-        vulnerabilidade = criar_vulnerabilidade()
-        ativo.adicionar_vulnerabilidade(vulnerabilidade)
-
-        if salvar_arquivos(lista_ativos):
-            print()
-            print(f"{VERDE}Vulnerabilidade cadastrada com sucesso!{NORMAL}")
-        else:
-            ativo.vulnerabilidades.remove(vulnerabilidade)
-            print(f"{VERMELHO}Erro ao salvar a vulnerabilidade!{NORMAL}")
-        break
+        print(f"{VERDE}Vulnerabilidade cadastrada com sucesso!{NORMAL}")
+    else:
+        ativo.vulnerabilidades.remove(vulnerabilidade)
+        print(f"{VERMELHO}Erro ao salvar a vulnerabilidade!{NORMAL}")
 
     aguardar_retorno_menu()
 
@@ -113,57 +105,53 @@ def consultar_ativo(lista_ativos):
         return
     
     while True:
-        print()
-        print("1 - Buscar por ID")
-        print("2 - Buscar por Nome")
-        print("3 - Listar todos os ativos")
-        print("4 - Voltar ao menu principal")
-        print()
 
-        busca_opcao = verificar_int("Escolha uma opção: ")
+        opcoes_consultar = [
+            {"name": "1 - Buscar por ID", "value": 1},
+            {"name": "2 - Buscar por Nome", "value": 2},
+            {"name": "3 - Listar todos os ativos", "value": 3},
+            {"name": "4 - Voltar ao menu principal", "value": 4},
+        ]
+
+        print()
+        busca_opcao = escolher_opcao("Escolha uma opção", opcoes_consultar)
         if busca_opcao not in range(1, 5):
             print(f"{VERMELHO}Essa opção não está disponível, Tente novamente!{NORMAL}")
             continue
+        limpar_terminal()
 
         if busca_opcao == 1:
-            while True:
-                id_digitado = verificar_int("Digite o ID do ativo que deseja buscar (0 para voltar): ")
-                if id_digitado == 0:
-                    limpar_terminal()
-                    break   
-                print()
-                ativo = buscar_ativo_por_id(id_digitado, lista_ativos)
-                if ativo is None:
-                    print("Esse ativo não foi encontrado, tente novamente...")
-                    continue
-                limpar_terminal()
-                exibir_ativos_e_vulnerabilidades(ativo)
-                input("\nPressione Enter para voltar ao menu de consulta...")
-                limpar_terminal()
-                break
+            ativos_em_opcoes = ativos_em_opcoes_interface(lista_ativos)
+            ativo = escolher_opcao("Escolha um ativo:", ativos_em_opcoes)
+            if ativo == None:
+                continue
+            print()
+            limpar_terminal()
+            exibir_ativos_e_vulnerabilidades(ativo)
+            aguardar_retorno_menu()
+            continue
 
         elif busca_opcao == 2: 
             while True:
-                nome_digitado = pedir_input("Digite o nome do ativo que deseja buscar (0 para voltar): ")
+                nome_digitado = pedir_input("Digite o nome do ativo (0 para voltar): ")
                 if nome_digitado == "0":
                     limpar_terminal()
                     break
-                print()
                 ativos = buscar_ativo_por_nome(nome_digitado, lista_ativos)
                 if not ativos:
-                    print("Não foi encontrado nenhum ativo com esse nome, tente novamente...")
+                    print(f"{VERMELHO}ERRO:{NORMAL} Não foi encontrado nenhum ativo com esse nome, tente novamente...")
+                    print()
                     continue
 
                 for ativo in ativos:
                     limpar_terminal()
                     exibir_ativos_e_vulnerabilidades(ativo)
-                input("\nPressione Enter para voltar ao menu de consulta...")
-                limpar_terminal()
+                aguardar_retorno_menu()
                 break
 
         elif busca_opcao == 3:
             listar_ativos(lista_ativos, aguardar=False)
-            input("\nPressione Enter para voltar...")
+            input(f"\nPressione {AMARELO}Enter{NORMAL} para voltar...")
             limpar_terminal()
 
         elif busca_opcao == 4:
@@ -177,48 +165,37 @@ def atualizar_ativo(lista_ativos):
         aguardar_retorno_menu()
         return
 
-    listar_ativos(lista_ativos, aguardar=False)
-
-    opcoes_atualizar = {
+    funcoes_atualizar = {
         1: atualizar_nome,
         2: atualizar_responsavel,
         3: atualizar_setor,
         4: atualizar_tipo,
     }
 
+    opcoes_atualizar = [
+        Separator(""),
+        {"name": "1 - Nome", "value": 1},
+        {"name": "2 - Responsável", "value": 2},
+        {"name": "3 - Setor", "value": 3},
+        {"name": "4 - Tipo", "value": 4},
+        {"name": "5 - Voltar ao menu principal", "value": 5}
+    ]
+
     while True:
-        print()
-        id_digitado = verificar_int("Digite o ID do ativo que deseja atualizar (0 para voltar): ")
-        if id_digitado == 0:
-            break
-        ativo = buscar_ativo_por_id(id_digitado, lista_ativos)
-        if ativo is None:
-            print("Esse ativo não foi encontrado, tente novamente...")
-            continue
+        ativos_em_opcoes = ativos_em_opcoes_interface(lista_ativos)
+        ativo = escolher_opcao("Escolha um ativo:", ativos_em_opcoes)
+        if ativo == None:
+            return
+        limpar_terminal()
 
         while True:
-            limpar_terminal()
-            print("O que deseja atualizar no ativo?")
-            print()
-            print("1 - Nome")
-            print("2 - Responsável")
-            print("3 - Setor")
-            print("4 - Tipo")
-            print("5 - Voltar ao menu principal")
-            
-            print()
-            escolha_digitada = verificar_int("Digite uma opção: ")
-            if escolha_digitada not in range(1, 6):
-                print(f"{VERMELHO}Essa opção não está disponível!{NORMAL}")
-                continue
+            escolhido = escolher_opcao("O que deseja atualizar no ativo?", opcoes_atualizar)
+            if escolhido == 5:
+                return
 
-            elif escolha_digitada == 5:
-                break
+            funcoes_atualizar[escolhido](ativo, lista_ativos)
 
-            opcoes_atualizar[escolha_digitada](ativo, lista_ativos)
-
-            ativo = buscar_ativo_por_id(id_digitado, lista_ativos)
-        break
+            ativo = buscar_ativo_por_id(ativo.id, lista_ativos)
 
     aguardar_retorno_menu()
 
@@ -229,17 +206,11 @@ def remover_ativo(lista_ativos):
         aguardar_retorno_menu()
         return
 
-    listar_ativos(lista_ativos, aguardar=False)
-
     while True:
-        print()
-        id_digitado = verificar_int("Digite o ID do ativo a ser removido (0 para voltar): ")
-        if id_digitado == 0:
-            break
-        ativo = buscar_ativo_por_id(id_digitado, lista_ativos)
-        if ativo is None:
-            print(f"{VERMELHO}Esse ID não foi encontrado!{NORMAL}")
-            continue
+        ativos_em_opcoes = ativos_em_opcoes_interface(lista_ativos)
+        ativo = escolher_opcao("Escolha um ativo:", ativos_em_opcoes)
+        if ativo == None:
+            return
 
         print()
         print(f"{TITULO}=-=-=-=-=-= INFORMAÇÕES DO ATIVO =-=-=-=-=-=-={NORMAL}")
@@ -250,10 +221,11 @@ def remover_ativo(lista_ativos):
         exibe_vulnerabilidades_ativo(ativo)
 
         while True:
+            print()
             print(f"{VERMELHO}Atenção{NORMAL}: ao excluir este ativo, "
             "suas vulnerabilidades e dependências "
             "também serão removidas.")
-            print
+            print()
             confirmacao = pedir_input("Confirma a exclusão? [S/N] ").lower()
 
             if confirmacao not in ["s", "n"]:
@@ -261,7 +233,9 @@ def remover_ativo(lista_ativos):
                 continue
 
             if confirmacao == "n":
+                print()
                 print("Exclusão cancelada")
+                aguardar_retorno_menu()
                 break
 
             backup_lista_ativos = copy.deepcopy(lista_ativos)
@@ -370,8 +344,6 @@ def remover_dependencia(lista_ativos):
         aguardar_retorno_menu()
         return
 
-    listar_ativos(lista_ativos, aguardar=False)
-
     while True:
         print()
         id_digitado = verificar_int("Digite o ID do ativo que recebe o risco (0 para voltar) ")
@@ -432,42 +404,44 @@ def remover_dependencia(lista_ativos):
     limpar_terminal()
 
 def atualizar_nome(ativo, lista_ativos):
-    print()
+    limpar_terminal()
     print(f"OBS: O nome atual é {ativo.nome}")
     backup_nome = ativo.nome
     ativo.nome = pedir_input("Digite o novo nome do ativo: ")
     if salvar_arquivos(lista_ativos):
         print()
         print(f"{VERDE}Nome alterado com sucesso!{NORMAL}")
+        aguardar_retorno_menu()
     else:
         ativo.nome = backup_nome
 
 def atualizar_responsavel(ativo, lista_ativos):
-    print()
+    limpar_terminal()
     print(f"OBS: O responsável atual é {ativo.responsavel}")
     backup_responsavel = ativo.responsavel
     ativo.responsavel = pedir_input("Digite o responsável pelo ativo: ")
     if salvar_arquivos(lista_ativos):
         print()
         print(f"{VERDE}Responsável alterado com sucesso!{NORMAL}")
+        aguardar_retorno_menu()
     else:
         ativo.responsavel = backup_responsavel
 
 def atualizar_setor(ativo, lista_ativos):
-    print()
+    limpar_terminal()
     print(f"OBS: O setor responsável atual é {ativo.setor}")
     backup_setor = ativo.setor
     ativo.setor = pedir_input("Digite o setor responsável: ")
     if salvar_arquivos(lista_ativos):
         print()
         print(f"{VERDE}Setor alterado com sucesso!{NORMAL}")
+        aguardar_retorno_menu()
     else:
         ativo.setor = backup_setor
 
 def atualizar_tipo(ativo, lista_ativos):
     backup_ativo = ativo
     limpar_terminal()
-    exibir_tipos_de_ativos()
 
     tipo_escolhido = TiposDeAtivos(pedir_tipo_de_ativo(ativo, mostrar_atual=True))
     classe_escolhida = classes_ativos[tipo_escolhido]
@@ -475,11 +449,13 @@ def atualizar_tipo(ativo, lista_ativos):
     if classe_escolhida is type(ativo):
         print()
         print(f"{VERMELHO}ERRO:{NORMAL} O ativo já é do tipo {type(ativo).__name__}")
+        aguardar_retorno_menu()
         return
 
     novo_ativo = classe_escolhida(ativo.id, ativo.nome, ativo.responsavel, ativo.setor)
     novo_ativo.vulnerabilidades = ativo.vulnerabilidades
     novo_ativo.dependencias = ativo.dependencias
+    print()
     novo_ativo.pedir_detalhe()
 
     posicao = lista_ativos.index(ativo)
@@ -488,6 +464,7 @@ def atualizar_tipo(ativo, lista_ativos):
     if salvar_arquivos(lista_ativos):
         print()
         print(f"{VERDE}Tipo do ativo alterado com sucesso!{NORMAL}")
+        aguardar_retorno_menu()
     else:
         lista_ativos[posicao] = backup_ativo
 
@@ -520,3 +497,14 @@ def criar_vulnerabilidade():
 def aguardar_retorno_menu():
     input(f"\nPressione {AMARELO}Enter{NORMAL} para voltar ao menu de consulta...")
     limpar_terminal()
+
+def ativos_em_opcoes_interface(lista_ativos):
+    ativos_em_opcoes = []
+    ativos_em_opcoes.append(Separator(""))
+    for ativo in lista_ativos:
+        opcao = {"name": f"ID {ativo.id} — {ativo.nome}", "value": ativo}
+        ativos_em_opcoes.append(opcao)
+    ativos_em_opcoes.append(Separator(""))
+    ativos_em_opcoes.append({"name": "Voltar", "value": None})
+
+    return ativos_em_opcoes
