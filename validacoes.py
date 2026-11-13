@@ -54,10 +54,12 @@ def exibir_tipos_de_ativos():
     for tipo in TiposDeAtivos:
         print(f"{tipo.value} - {tipo.name}")
 
-def pedir_tipo_de_ativo():
+def pedir_tipo_de_ativo(ativo="", mostrar_atual=False):
     while True:
         try:
             print("")
+            if mostrar_atual:
+                print(f"OBS: O ativo atual é do tipo {type(ativo).__name__}")
             tipo = int(input(f"Digite o tipo do ativo [1 até {len(TiposDeAtivos)}]: "))
             if tipo not in range(1, len(TiposDeAtivos) + 1):
                 print(f"{VERMELHO}O número digitado não é um valor de 1 a {len(TiposDeAtivos)}{NORMAL}")

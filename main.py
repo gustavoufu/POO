@@ -1,4 +1,4 @@
-from modelos import VERDE, VERMELHO, NORMAL
+from modelos import VERDE, NORMAL
 from operacoes import (
     cadastrar_ativo,
     cadastrar_vulnerabilidade,
@@ -7,11 +7,10 @@ from operacoes import (
     atualizar_ativo,
     remover_ativo,
     mostrar_riscos,
-    mostrar_menu,
     cadastrar_dependencias,
     remover_dependencia)
 from dados import carregar_ativos
-from validacoes import verificar_int
+from interface import selecionar_opcao_menu
 
 lista_ativos = carregar_ativos()
 
@@ -29,18 +28,12 @@ opcoes = {
 
 while True:
 
-    mostrar_menu()
-    opcao = verificar_int("Escolha uma opção: ")
+    opcao = selecionar_opcao_menu()
 
     if opcao == 10:
         print()
         print(f"{VERDE}Saindo do sistema. Até logo!{NORMAL}")
         print()
         break
-            
-    elif opcao not in opcoes:
-        print()
-        print(f"{VERMELHO}ERRO: Essa opção não está disponível...{NORMAL}")
-        continue
 
     opcoes[opcao](lista_ativos)

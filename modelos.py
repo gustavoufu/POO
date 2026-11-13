@@ -2,6 +2,7 @@ from enum import Enum
 
 VERMELHO = "\033[1;31m"
 VERDE = "\033[1;32m"
+AMARELO = "\033[1;33m"
 TITULO = "\033[1;36m"
 NORMAL = "\033[0m"
 
