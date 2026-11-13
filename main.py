@@ -33,7 +33,7 @@ while True:
     opcao = selecionar_opcao_menu()
 
     if opcao == 10:
-        print()
+        limpar_terminal()
         print(f"{VERDE}Saindo do sistema. Até logo!{NORMAL}")
         print()
         break
