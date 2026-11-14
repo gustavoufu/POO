@@ -1,6 +1,7 @@
 from abc import ABC, abstractmethod
 from validacoes import pedir_input
-from interface import escolher_opcao
+from interface import escolher_opcao, limpar_terminal
+from InquirerPy.separator import Separator
 
 class Vulnerabilidade:
     def __init__(self, nome, descricao, categoria, severidade, status, codigo_cve="Não informado"):
@@ -84,6 +85,7 @@ class Notebook(Ativo):
 
     def pedir_detalhe(self):
         self.sistema_operacional = pedir_input("Digite o sistema operacional do notebook: ")
+        return self.sistema_operacional
 
     def retorna_dicionario(self):
         dict_mae = super().retorna_dicionario()
@@ -105,14 +107,19 @@ class Servidor(Ativo):
         super().__init__(id, nome, responsavel, setor)
         self.tipo_servidor = "Não informado"
 
-    def pedir_detalhe(self):
+    def pedir_detalhe(self, é_servidor=None):
         tipos_servidores = [
             {"name": "Físico", "value": "Físico"},
             {"name": "Virtual", "value": "Virtual"},
-            {"name": "Nuvem", "value": "Nuvem"}
+            {"name": "Nuvem", "value": "Nuvem"},
+            Separator(""),
+            {"name": "Voltar", "value": None}
         ]
 
-        self.tipo_servidor = escolher_opcao("Selecione o tipo do servidor", tipos_servidores)
+        limpar_terminal()
+        detalhe_escolhido = escolher_opcao("Selecione o tipo do servidor", tipos_servidores)
+        self.tipo_servidor = detalhe_escolhido
+        return self.tipo_servidor
 
     def retorna_dicionario(self):
         dict_mae = super().retorna_dicionario()
@@ -136,6 +143,7 @@ class Roteador(Ativo):
 
     def pedir_detalhe(self):
         self.versao_firmware = pedir_input("Digite a versão do firmware do roteador: ")
+        return self.versao_firmware
 
     def retorna_dicionario(self):
         dict_mae = super().retorna_dicionario()
@@ -159,6 +167,7 @@ class Aplicativo(Ativo):
 
     def pedir_detalhe(self):
         self.versao = pedir_input("Digite a versão do aplicativo: ")
+        return self.versao
 
     def retorna_dicionario(self):
         dict_mae = super().retorna_dicionario()

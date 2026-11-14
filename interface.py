@@ -1,4 +1,4 @@
-import subprocess
+import os
 from InquirerPy import get_style, inquirer
 from InquirerPy.separator import Separator
 
@@ -48,7 +48,8 @@ def selecionar_opcao_menu():
     default=0
     ).execute()
 
-def escolher_opcao(mensagem, escolhas):
+def escolher_opcao(mensagem, escolhas, titulo=None):
+
     return inquirer.select(
         message=mensagem,
         choices=escolhas,
@@ -61,7 +62,11 @@ def escolher_opcao(mensagem, escolhas):
     ).execute()
 
 def limpar_terminal():
-    subprocess.run(["clear"], check=False)
+    os.system('cls' if os.name == 'nt' else 'clear')
+
+def imprimir_titulo(titulo, tamanho=55):
+    prefixo = f"── {titulo.upper()} "
+    print(prefixo + "─" * max(0, tamanho - len(prefixo)))
 
 if __name__ == "__main__":
     print(selecionar_opcao_menu())
