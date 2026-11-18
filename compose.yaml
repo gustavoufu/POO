@@ -1,7 +1,10 @@
 services:
   inventario:
+    environment:
+      TERM: xterm-256color
     build: .
     image: sistema-inventario
+    restart: unless-stopped
     stdin_open: true
     tty: true
     volumes:
