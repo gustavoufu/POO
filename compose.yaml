@@ -2,6 +2,7 @@ services:
   inventario:
     environment:
       TERM: xterm-256color
+      PROMPT_TOOLKIT_NO_CPR: "1"
     build: .
     image: sistema-inventario
     restart: unless-stopped
