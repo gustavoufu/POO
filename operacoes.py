@@ -6,6 +6,7 @@ from validacoes import (verificar_int, pedir_input,
      pedir_tipo_de_ativo, exibe_vulnerabilidades_ativo, pedir_cvss, pedir_fator_dependencia)
 from classes import Aplicativo, Notebook, Roteador, Servidor, Vulnerabilidade
 from interface import limpar_terminal, escolher_opcao, imprimir_titulo
+from InquirerPy.separator import Separator
 
 
 classes_ativos = {
@@ -175,6 +176,7 @@ def atualizar_ativo(lista_ativos):
     }
 
     opcoes_atualizar = [
+        Separator(""),
         {"name": "1 - Nome", "value": 1},
         {"name": "2 - Responsável", "value": 2},
         {"name": "3 - Setor", "value": 3},
@@ -502,9 +504,14 @@ def aguardar_retorno_menu():
 
 def ativos_em_opcoes_interface(lista_ativos):
     ativos_em_opcoes = []
+    ativos_em_opcoes.append(Separator(""))
     for ativo in lista_ativos:
         opcao = {"name": f"ID {ativo.id} — {ativo.nome}", "value": ativo}
         ativos_em_opcoes.append(opcao)
+    ativos_em_opcoes.append(Separator(""))
     ativos_em_opcoes.append({"name": "Voltar", "value": None})
 
     return ativos_em_opcoes
+
+def titulo_interface(titulo):
+    return Separator(f"── {titulo.upper()} {'─' * (50 - len(titulo))}")
