@@ -15,8 +15,7 @@ estilo_menu = get_style(
 )
 
 def selecionar_opcao_menu():
-
-    return inquirer.select(
+    prompt = inquirer.select(
         message="── GERENCIAMENTO DE ATIVOS ─────────────────────────",
         choices=[
         Separator(""),
@@ -46,11 +45,12 @@ def selecionar_opcao_menu():
     instruction="",
     show_cursor=False,
     default=0
-    ).execute()
+    )
+    prompt.application.erase_when_done = True
+    return prompt.execute()
 
 def escolher_opcao(mensagem, escolhas, titulo=None):
-
-    return inquirer.select(
+    prompt = inquirer.select(
         message=mensagem,
         choices=escolhas,
         style=estilo_menu,
@@ -59,10 +59,12 @@ def escolher_opcao(mensagem, escolhas, titulo=None):
         pointer="❯",
         show_cursor=False,
         default=0
-    ).execute()
+    )
+    prompt.application.erase_when_done = True
+    return prompt.execute()
 
 def limpar_terminal():
-    os.system('cls' if os.name == 'nt' else 'clear')
+    print("\033[2J\033[H", end="", flush=True)
 
 def imprimir_titulo(titulo, tamanho=55):
     prefixo = f"── {titulo.upper()} "
