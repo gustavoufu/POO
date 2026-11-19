@@ -1,7 +1,6 @@
 from abc import ABC, abstractmethod
 from validacoes import pedir_input
 from interface import escolher_opcao, limpar_terminal
-from InquirerPy.separator import Separator
 
 class Vulnerabilidade:
     def __init__(self, nome, descricao, categoria, severidade, status, codigo_cve="Não informado"):
@@ -112,7 +111,6 @@ class Servidor(Ativo):
             {"name": "Físico", "value": "Físico"},
             {"name": "Virtual", "value": "Virtual"},
             {"name": "Nuvem", "value": "Nuvem"},
-            Separator(""),
             {"name": "Voltar", "value": None}
         ]
 
