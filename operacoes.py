@@ -199,9 +199,7 @@ def atualizar_ativo(lista_ativos):
             funcoes_atualizar[escolhido](ativo, lista_ativos)
 
             ativo = buscar_ativo_por_id(ativo.id, lista_ativos)
-
-    aguardar_retorno_menu()
-
+            
 def remover_ativo(lista_ativos):
     limpar_terminal()
     imprimir_titulo("Remoção de ativos")
@@ -216,8 +214,6 @@ def remover_ativo(lista_ativos):
         if ativo == None:
             return
 
-        print()
-        print(f"{TITULO}=-=-=-=-=-= INFORMAÇÕES DO ATIVO =-=-=-=-=-=-={NORMAL}")
         print()
         ativo.exibir_detalhes()
         print()

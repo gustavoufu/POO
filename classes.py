@@ -58,7 +58,6 @@ class Ativo(ABC):
         print(f"Responsável: {self.responsavel}")
         print(f"Setor: {self.setor}")
         print(f"Vulnerabilidades: {len(self.vulnerabilidades)}")
-        print(f"Fator de exposição: {self.fator_exposicao()}")
 
     def adicionar_vulnerabilidade(self, vulnerabilidade):
         self.vulnerabilidades.append(vulnerabilidade)
@@ -69,10 +68,6 @@ class Ativo(ABC):
             "Fator": fator
         }
         self.dependencias.append(dependencia)
-
-    @abstractmethod
-    def fator_exposicao(self):
-        pass
 
     @abstractmethod
     def adicionar_detalhe(self):
@@ -95,9 +90,6 @@ class Notebook(Ativo):
     def exibir_detalhes(self):
         super().exibir_detalhes()
         print(f"Sistema operacional: {self.sistema_operacional}")
-
-    def fator_exposicao(self):
-        return 1.0
     
     def adicionar_detalhe(self, detalhe):
         self.sistema_operacional = detalhe
@@ -129,9 +121,6 @@ class Servidor(Ativo):
     def exibir_detalhes(self):
         super().exibir_detalhes()
         print(f"Tipo do servidor: {self.tipo_servidor}")
-
-    def fator_exposicao(self):
-        return 1.3
     
     def adicionar_detalhe(self, detalhe):
         self.tipo_servidor = detalhe
@@ -153,9 +142,6 @@ class Roteador(Ativo):
     def exibir_detalhes(self):
         super().exibir_detalhes()
         print(f"Versão do Firmware: {self.versao_firmware}")
-
-    def fator_exposicao(self):
-        return 1.2
     
     def adicionar_detalhe(self, detalhe):
         self.versao_firmware = detalhe
@@ -177,9 +163,6 @@ class Aplicativo(Ativo):
     def exibir_detalhes(self):
         super().exibir_detalhes()
         print(f"Versão: {self.versao}")
-
-    def fator_exposicao(self):
-        return 1.1
     
     def adicionar_detalhe(self, detalhe):
         self.versao = detalhe
