@@ -8,5 +8,6 @@ services:
     restart: unless-stopped
     stdin_open: true
     tty: true
+    command: tail -f /dev/null
     volumes:
       - ./arquivoativos.json:/app/arquivoativos.json
