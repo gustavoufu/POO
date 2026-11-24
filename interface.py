@@ -39,7 +39,7 @@ def selecionar_opcao_menu():
 
     max_height="100%",
     style=estilo_menu,
-    pointer="❯",
+    pointer=">",
     qmark="",
     amark="",
     instruction="",
