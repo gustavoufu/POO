@@ -110,6 +110,9 @@ class Servidor(Ativo):
 
         limpar_terminal()
         detalhe_escolhido = escolher_opcao("Selecione o tipo do servidor", tipos_servidores)
+        if detalhe_escolhido is None:
+            self.tipo_servidor = "Não informado"
+            return None
         self.tipo_servidor = detalhe_escolhido
         return self.tipo_servidor
 

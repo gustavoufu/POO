@@ -20,7 +20,7 @@ def pedir_cvss():
                 print("Valor inválido. Por favor, insira um número entre 0.0 e 10.0")
                 continue
         except (TypeError, ValueError):
-            print("ERRO, esse valor não é valido, tente novamente...")
+            print("ERRO, esse valor não é válido, tente novamente...")
             continue
         else:
             return valor_cvss

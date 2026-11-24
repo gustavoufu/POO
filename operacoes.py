@@ -266,6 +266,7 @@ def mostrar_riscos(lista_ativos):
 
     if lista_dos_riscos_efetivos is None:
         print(f"{VERMELHO}Erro{NORMAL}: Não foi possível calcular o risco efetivo. A matriz pode não ser invertível ou pode ser numericamente instável.")
+        aguardar_retorno_menu()
         return
 
     for pos, ativo in enumerate(lista_ativos):
@@ -495,7 +496,7 @@ def criar_vulnerabilidade():
     return Vulnerabilidade(nome, descricao, categoria, severidade, status, cve)
 
 def aguardar_retorno_menu():
-    input(f"\nPressione {AMARELO}Enter{NORMAL} para voltar ao menu de consulta...")
+    input(f"\nPressione {AMARELO}Enter{NORMAL} para voltar ao menu...")
     limpar_terminal()
 
 def ativos_em_opcoes_interface(lista_ativos):
@@ -508,6 +509,3 @@ def ativos_em_opcoes_interface(lista_ativos):
     ativos_em_opcoes.append({"name": "Voltar", "value": None})
 
     return ativos_em_opcoes
-
-def titulo_interface(titulo):
-    return Separator(f"── {titulo.upper()} {'─' * (50 - len(titulo))}")
