@@ -1,4 +1,7 @@
 from abc import ABC, abstractmethod
+from validacoes import pedir_input
+from interface import escolher_opcao, limpar_terminal
+from InquirerPy.separator import Separator
 
 class Vulnerabilidade:
     def __init__(self, nome, descricao, categoria, severidade, status, codigo_cve="Não informado"):
@@ -35,6 +38,7 @@ class Ativo(ABC):
         self.setor = setor
 
         self.vulnerabilidades = []
+        self.dependencias = []
 
     def retorna_dicionario(self):
         return {
@@ -43,7 +47,8 @@ class Ativo(ABC):
             "Nome": self.nome,
             "Responsavel": self.responsavel,
             "Setor": self.setor,
-            "Vulnerabilidades": [v.retorna_dicionario() for v in self.vulnerabilidades]
+            "Vulnerabilidades": [v.retorna_dicionario() for v in self.vulnerabilidades],
+            "Dependencias" : self.dependencias
         }
 
     def exibir_detalhes(self):
@@ -53,19 +58,29 @@ class Ativo(ABC):
         print(f"Responsável: {self.responsavel}")
         print(f"Setor: {self.setor}")
         print(f"Vulnerabilidades: {len(self.vulnerabilidades)}")
-        print(f"Fator de exposição: {self.fator_exposicao()}")
 
     def adicionar_vulnerabilidade(self, vulnerabilidade):
         self.vulnerabilidades.append(vulnerabilidade)
 
+    def adicionar_dependencia(self, id_quem_compartilha_risco, fator):
+        dependencia = {
+            "AtivoIdBaseRisco": id_quem_compartilha_risco,
+            "Fator": fator
+        }
+        self.dependencias.append(dependencia)
+
     @abstractmethod
-    def fator_exposicao(self):
+    def adicionar_detalhe(self):
         pass
 
 class Notebook(Ativo):
-    def __init__(self, id, nome, responsavel, setor, sistema_operacional="Não informado"):
+    def __init__(self, id, nome, responsavel, setor):
         super().__init__(id, nome, responsavel, setor)
-        self.sistema_operacional = sistema_operacional
+        self.sistema_operacional = "Não informado"
+
+    def pedir_detalhe(self):
+        self.sistema_operacional = pedir_input("Digite o sistema operacional do notebook: ")
+        return self.sistema_operacional
 
     def retorna_dicionario(self):
         dict_mae = super().retorna_dicionario()
@@ -75,14 +90,31 @@ class Notebook(Ativo):
     def exibir_detalhes(self):
         super().exibir_detalhes()
         print(f"Sistema operacional: {self.sistema_operacional}")
-
-    def fator_exposicao(self):
-        return 1.0
+    
+    def adicionar_detalhe(self, detalhe):
+        self.sistema_operacional = detalhe
 
 class Servidor(Ativo):
-    def __init__(self, id, nome, responsavel, setor, tipo_servidor="Não informado"):
+    def __init__(self, id, nome, responsavel, setor):
         super().__init__(id, nome, responsavel, setor)
-        self.tipo_servidor = tipo_servidor
+        self.tipo_servidor = "Não informado"
+
+    def pedir_detalhe(self, é_servidor=None):
+        tipos_servidores = [
+            {"name": "Físico", "value": "Físico"},
+            {"name": "Virtual", "value": "Virtual"},
+            {"name": "Nuvem", "value": "Nuvem"},
+            Separator(""),
+            {"name": "Voltar", "value": None}
+        ]
+
+        limpar_terminal()
+        detalhe_escolhido = escolher_opcao("Selecione o tipo do servidor", tipos_servidores)
+        if detalhe_escolhido is None:
+            self.tipo_servidor = "Não informado"
+            return None
+        self.tipo_servidor = detalhe_escolhido
+        return self.tipo_servidor
 
     def retorna_dicionario(self):
         dict_mae = super().retorna_dicionario()
@@ -92,14 +124,18 @@ class Servidor(Ativo):
     def exibir_detalhes(self):
         super().exibir_detalhes()
         print(f"Tipo do servidor: {self.tipo_servidor}")
-
-    def fator_exposicao(self):
-        return 1.3
+    
+    def adicionar_detalhe(self, detalhe):
+        self.tipo_servidor = detalhe
 
 class Roteador(Ativo):
-    def __init__(self, id, nome, responsavel, setor, versao_firmware="Não informado"):
+    def __init__(self, id, nome, responsavel, setor):
         super().__init__(id, nome, responsavel, setor)
-        self.versao_firmware = versao_firmware
+        self.versao_firmware = "Não informado"
+
+    def pedir_detalhe(self):
+        self.versao_firmware = pedir_input("Digite a versão do firmware do roteador: ")
+        return self.versao_firmware
 
     def retorna_dicionario(self):
         dict_mae = super().retorna_dicionario()
@@ -109,14 +145,18 @@ class Roteador(Ativo):
     def exibir_detalhes(self):
         super().exibir_detalhes()
         print(f"Versão do Firmware: {self.versao_firmware}")
-
-    def fator_exposicao(self):
-        return 1.2
+    
+    def adicionar_detalhe(self, detalhe):
+        self.versao_firmware = detalhe
     
 class Aplicativo(Ativo):
-    def __init__(self, id, nome, responsavel, setor, versao="Não informado"):
+    def __init__(self, id, nome, responsavel, setor):
         super().__init__(id, nome, responsavel, setor)
-        self.versao = versao
+        self.versao = "Não informado"
+
+    def pedir_detalhe(self):
+        self.versao = pedir_input("Digite a versão do aplicativo: ")
+        return self.versao
 
     def retorna_dicionario(self):
         dict_mae = super().retorna_dicionario()
@@ -126,6 +166,6 @@ class Aplicativo(Ativo):
     def exibir_detalhes(self):
         super().exibir_detalhes()
         print(f"Versão: {self.versao}")
-
-    def fator_exposicao(self):
-        return 1.1
+    
+    def adicionar_detalhe(self, detalhe):
+        self.versao = detalhe

@@ -1,7 +1,4 @@
-from dados import carregar_ativos
 import numpy as np
-
-lista_ativos = carregar_ativos()
 
 def cves_unicos(lista_ativos):
     cves = []
@@ -30,7 +27,7 @@ def vetor_cvss(lista_ativos):
 
     return lista_cvss
     
-def matriz_cves(lista_ativos):
+def matriz_incidencia(lista_ativos):
     matriz = []
     cves = cves_unicos(lista_ativos)
 
@@ -52,7 +49,7 @@ def matriz_cves(lista_ativos):
     return matriz
 
 def calculo_risco_proprio(lista_ativos):
-    matriz = matriz_cves(lista_ativos)
+    matriz = matriz_incidencia(lista_ativos)
     vetor = vetor_cvss(lista_ativos)
 
     m = np.array(matriz)
@@ -71,9 +68,22 @@ def exibir_risco_proprio(lista_ativos):
 def matriz_dependencias(lista_ativos):
     qtd_de_ativos = len(lista_ativos)
 
+
     matriz = np.zeros((qtd_de_ativos, qtd_de_ativos), dtype=float)
-    matriz[0, 1] = 0.5
-    matriz[1, 0] = 0.25
+
+    posicao_por_id = {}
+    for posicao, ativo in enumerate(lista_ativos):
+        posicao_por_id[ativo.id] = posicao
+ 
+    for ativo in lista_ativos:
+        linha = posicao_por_id[ativo.id]
+        
+        for dependencia in ativo.dependencias:
+            id_transmissor = dependencia["AtivoIdBaseRisco"]    
+            coluna = posicao_por_id[id_transmissor]
+            fator = dependencia["Fator"]
+            
+            matriz[linha, coluna] = fator
 
     return matriz
 
@@ -84,13 +94,23 @@ def matriz_identidade(lista_ativos):
 
     return matriz_identidade
 
-def calculo_risco_total(lista_ativos):
+def calculo_risco_efetivo(lista_ativos):
 
     #(I - D):
     I = matriz_identidade(lista_ativos)
     D = matriz_dependencias(lista_ativos)
 
     A = I - D
+
+    determinante = np.linalg.det(A)
+    
+    if np.isclose(determinante, 0, atol=1e-9):
+        return None
+
+    numero_condicao = np.linalg.cond(A)
+
+    if not np.isfinite(numero_condicao) or numero_condicao > 1e12:
+        return None
 
     #A @ x = b
     b = calculo_risco_proprio(lista_ativos)

@@ -1,0 +1,15 @@
+services:
+  inventario:
+    environment:
+      LANG: C.UTF-8
+      LC_ALL: C.UTF-8
+      TERM: xterm-256color
+      PROMPT_TOOLKIT_NO_CPR: "1"
+    build: .
+    image: sistema-inventario
+    restart: unless-stopped
+    stdin_open: true
+    tty: true
+    command: tail -f /dev/null
+    volumes:
+      - ./arquivoativos.json:/app/arquivoativos.json
