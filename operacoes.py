@@ -5,7 +5,7 @@ from dados import salvar_arquivos
 from validacoes import (verificar_int, pedir_input,
      pedir_tipo_de_ativo, exibe_vulnerabilidades_ativo, pedir_cvss, pedir_fator_dependencia)
 from classes import Aplicativo, Notebook, Roteador, Servidor, Vulnerabilidade
-from interface import limpar_terminal, escolher_opcao, imprimir_titulo
+from interface import limpar_terminal, escolher_opcao, imprimir_titulo, aguardar_retorno_menu, ativos_em_opcoes_interface
 from InquirerPy.separator import Separator
 
 
@@ -25,7 +25,7 @@ def cadastrar_ativo(lista_ativos):
     responsavel_ativo = pedir_input("Digite o responsável pelo ativo: ")
     setor_ativo = pedir_input("Digite o setor responsável: ")
     print()
-    tipo_ativo = TiposDeAtivos(pedir_tipo_de_ativo(mostrar_atual=False))
+    tipo_ativo = pedir_tipo_de_ativo(mostrar_atual=False)
 
     classe_ativo = classes_ativos[tipo_ativo]
 
@@ -61,8 +61,10 @@ def cadastrar_ativo(lista_ativos):
 
 def cadastrar_vulnerabilidade(lista_ativos):
     limpar_terminal()
+    imprimir_titulo("Cadastro de Vulnerabilidades")
     if not lista_ativos:
-        print("Não há ativos cadastrados!")
+        print(f"{AMARELO}->{NORMAL} Não há ativos cadastrados!")
+        print("Cadastre um ativo antes de criar vulnerabilidades.")
         aguardar_retorno_menu()
         return
 
@@ -89,7 +91,8 @@ def listar_ativos(lista_ativos, aguardar=True):
     limpar_terminal()
     imprimir_titulo("Ativos cadastrados")
     if not lista_ativos:
-        print("Não há ativos cadastrados!")
+        print(f"{AMARELO}->{NORMAL} Não há ativos cadastrados!")
+        print("Cadastre um ativo para que ele apareça nesta lista.")
         aguardar_retorno_menu()
         return
     
@@ -103,7 +106,8 @@ def consultar_ativo(lista_ativos):
     limpar_terminal()
     imprimir_titulo("Consulta de ativos")
     if not lista_ativos:
-        print("Não há ativos cadastrados!")
+        print(f"{AMARELO}->{NORMAL} Não há ativos cadastrados!")
+        print("Cadastre um ativo antes de consultar suas informações.")
         aguardar_retorno_menu()
         return
     
@@ -164,7 +168,8 @@ def atualizar_ativo(lista_ativos):
     limpar_terminal()
     imprimir_titulo("Atualização de ativos")
     if not lista_ativos:
-        print("Não há ativos cadastrados!")
+        print(f"{AMARELO}->{NORMAL} Não há ativos cadastrados!")
+        print("Cadastre um ativo antes de alterar suas informações.")
         aguardar_retorno_menu()
         return
 
@@ -204,7 +209,8 @@ def remover_ativo(lista_ativos):
     limpar_terminal()
     imprimir_titulo("Remoção de ativos")
     if not lista_ativos:
-        print("Não há ativos cadastrados!")
+        print(f"{AMARELO}->{NORMAL} Não há ativos cadastrados!")
+        print("Cadastre um ativo antes de removê-lo.")
         aguardar_retorno_menu()
         return
 
@@ -257,7 +263,8 @@ def mostrar_riscos(lista_ativos):
     limpar_terminal()
     imprimir_titulo("Riscos")
     if not lista_ativos:
-        print("Nenhum ativo cadastrado.")
+        print(f"{AMARELO}->{NORMAL} Não há ativos cadastrados!")
+        print("Cadastre pelo menos um ativo para calcular os riscos.")
         aguardar_retorno_menu()
         return
 
@@ -281,7 +288,8 @@ def cadastrar_dependencias(lista_ativos):
     limpar_terminal()
     imprimir_titulo("Cadastro de dependências")
     if len(lista_ativos) < 2:
-        print("É necessário ter pelo menos 2 ativos cadastrados.")
+        print(f"{AMARELO}->{NORMAL} Não há ativos suficientes!")
+        print("Cadastre pelo menos dois ativos para definir a relação de risco entre eles.")
         aguardar_retorno_menu()
         return
 
@@ -341,7 +349,8 @@ def remover_dependencia(lista_ativos):
     limpar_terminal()
     imprimir_titulo("Remoção de dependências")
     if not lista_ativos:
-        print("Não há ativos cadastrados")
+        print(f"{AMARELO}->{NORMAL} Não há ativos cadastrados!")
+        print("Cadastre pelo menos dois ativos e uma dependência antes de removê-la.")
         aguardar_retorno_menu()
         return
 
@@ -494,18 +503,3 @@ def criar_vulnerabilidade():
     cve = pedir_input("Digite o código CVE: ")
 
     return Vulnerabilidade(nome, descricao, categoria, severidade, status, cve)
-
-def aguardar_retorno_menu():
-    input(f"\nPressione {AMARELO}Enter{NORMAL} para voltar ao menu...")
-    limpar_terminal()
-
-def ativos_em_opcoes_interface(lista_ativos):
-    ativos_em_opcoes = []
-    ativos_em_opcoes.append(Separator(""))
-    for ativo in lista_ativos:
-        opcao = {"name": f"ID {ativo.id} — {ativo.nome}", "value": ativo}
-        ativos_em_opcoes.append(opcao)
-    ativos_em_opcoes.append(Separator(""))
-    ativos_em_opcoes.append({"name": "Voltar", "value": None})
-
-    return ativos_em_opcoes

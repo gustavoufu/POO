@@ -1,4 +1,4 @@
-import os
+from modelos import AMARELO, NORMAL
 from InquirerPy import get_style, inquirer
 from InquirerPy.separator import Separator
 
@@ -69,6 +69,22 @@ def limpar_terminal():
 def imprimir_titulo(titulo, tamanho=55):
     prefixo = f"── {titulo.upper()} "
     print(prefixo + "─" * max(0, tamanho - len(prefixo)))
+    print()
+
+def aguardar_retorno_menu():
+    input(f"\nPressione {AMARELO}Enter{NORMAL} para voltar ao menu...")
+    limpar_terminal()
+
+def ativos_em_opcoes_interface(lista_ativos):
+    ativos_em_opcoes = []
+    ativos_em_opcoes.append(Separator(""))
+    for ativo in lista_ativos:
+        opcao = {"name": f"ID {ativo.id} — {ativo.nome}", "value": ativo}
+        ativos_em_opcoes.append(opcao)
+    ativos_em_opcoes.append(Separator(""))
+    ativos_em_opcoes.append({"name": "Voltar", "value": None})
+
+    return ativos_em_opcoes
 
 if __name__ == "__main__":
     print(selecionar_opcao_menu())

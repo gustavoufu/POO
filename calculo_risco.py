@@ -59,12 +59,6 @@ def calculo_risco_proprio(lista_ativos):
 
     return b
 
-def exibir_risco_proprio(lista_ativos):
-    riscos_proprios = calculo_risco_proprio(lista_ativos)
-
-    for pos, ativo in enumerate(lista_ativos):
-        print(f"Ativo: {ativo.nome} - Risco próprio: {riscos_proprios[pos]}")
-
 def matriz_dependencias(lista_ativos):
     qtd_de_ativos = len(lista_ativos)
 
