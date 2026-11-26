@@ -1,39 +1,64 @@
-# Sistema de Inventario de Ativos
+# Sistema de Inventário de Ativos
 
-## Sobre o projeto
-
-O Sistema de Inventario de Ativos e uma aplicacao desenvolvida em Python voltada para o gerenciamento de ativos de TI e o acompanhamento de suas respectivas vulnerabilidades de seguranca. O programa opera diretamente pelo terminal e utiliza um arquivo local em formato JSON (`arquivoativos.json`) para a persistencia automatica dos dados, carregando as informacoes ao iniciar e atualizando-as apos cada operacao realizada.
+Aplicação de terminal para cadastrar ativos de TI, associar vulnerabilidades e dependências entre ativos e consultar riscos. Os dados são persistidos em `arquivoativos.json`.
 
 ## Funcionalidades
 
-* **Gestao de Ativos:** Cadastro, listagem, busca, atualizacao e remocao de ativos no sistema.
-* **Busca Avancada:** Localizacao de ativos especificos utilizando criterios como ID ou nome.
-* **Controle de Vulnerabilidades:** Registro de vulnerabilidades associadas diretamente a cada ativo cadastrado.
-* **Consulta de Vulnerabilidades:** Visualizacao detalhada das falhas de seguranca vinculadas a cada item do inventario.
-* **Seguranca na Exclusao:** Etapa de confirmacao previa antes da remocao de um ativo, garantindo tambem a exclusao controlada de suas vulnerabilidades associadas.
+- Cadastro, consulta, atualização e remoção de ativos: notebooks, servidores, roteadores e aplicativos.
+- Cadastro e consulta de vulnerabilidades associadas aos ativos.
+- Cadastro e remoção de dependências entre ativos, com fator de transmissão de risco.
+- Consulta do risco próprio e do risco efetivo de cada ativo.
+- Persistência automática dos ativos, vulnerabilidades e dependências em JSON.
 
-## Como obter o projeto
+## Modelo de orientação a objetos
 
-Para clonar e configurar o repositorio em sua maquina local, abra o terminal e execute os comandos abaixo, que nao exigem autenticacao previa:
+`Equipamentos` é a classe-base abstrata. `Notebook`, `Servidor`, `Roteador` e `Aplicativo` herdam dela e acrescentam seus detalhes específicos. Cada ativo cadastrado é um objeto individual; vulnerabilidades e dependências ficam associadas ao objeto correspondente.
+
+## Cálculo de risco
+
+O programa monta as matrizes e vetores a partir dos dados cadastrados:
+
+- `M`: matriz de incidência entre ativos e CVEs;
+- `v`: vetor de severidades CVSS;
+- `b = Mv`: risco próprio de cada ativo;
+- `A`: matriz de dependências, em que cada valor representa a fração do risco transmitida.
+
+O risco efetivo é calculado resolvendo `x = b + Ax`, ou, equivalentemente, `(I - A)x = b`. Antes de resolver o sistema, a aplicação verifica a invertibilidade e o condicionamento da matriz. O cálculo usa NumPy.
+
+## Requisitos
+
+- Python 3.13 para executar localmente, ou Docker com Docker Compose.
+- As dependências Python estão listadas em `requirements.txt`.
+
+## Executar localmente
+
+Na pasta do projeto:
 
 ```bash
-git clone https://github.com/gustavoufu/sistema-inventario.git
-cd sistema-inventario
-
-```
-
-## Como executar
-
-Certifique-se de possuir o Python instalado em seu ambiente. Com o repositorio clonado e acessando o diretorio do projeto atraves do terminal, execute o seguinte comando:
-
-```bash
+python -m pip install -r requirements.txt
 python main.py
-
 ```
 
-## Dados armazenados
+Use as setas e Enter para navegar pelo menu. A opção **Sair** encerra o programa.
 
-O sistema estrutura as informacoes utilizando dois componentes principais salvos no arquivo `arquivoativos.json`:
+## Executar com Docker Compose
 
-* **Ativos:** Cada registro e composto por ID, nome, responsavel, setor, tipo e uma lista dedicada de vulnerabilidades.
-* **Vulnerabilidades:** Cada item vinculado ao ativo possui nome, descricao, categoria, severidade e status de tratamento.
+Na pasta que contém `compose.yaml`:
+
+```bash
+docker compose up -d --build
+docker compose ps
+docker compose exec -it inventario python main.py
+```
+
+O serviço mantém o container ativo com `tail -f /dev/null`; o CRUD é iniciado separadamente com `docker compose exec`. Sair do menu encerra o CRUD, mas não o processo principal do container. O serviço usa a política `unless-stopped` e monta `arquivoativos.json` no container, preservando os dados no arquivo do projeto.
+
+## Persistência e testes
+
+`arquivoativos.json` contém um array JSON de ativos. Cada registro inclui o tipo e os dados do ativo, suas vulnerabilidades e suas dependências.
+
+Para executar os testes:
+
+```bash
+python -m pytest
+```
