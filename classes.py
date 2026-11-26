@@ -30,7 +30,7 @@ class Vulnerabilidade:
         print(f"Status: {self.status}")
         print(f"CVE: {self.codigo_cve}")
 
-class Ativo(ABC):
+class Equipamento(ABC):
     def __init__(self, id, nome, responsavel, setor):
         self.id = id
         self.nome = nome
@@ -73,7 +73,7 @@ class Ativo(ABC):
     def adicionar_detalhe(self):
         pass
 
-class Notebook(Ativo):
+class Notebook(Equipamento):
     def __init__(self, id, nome, responsavel, setor):
         super().__init__(id, nome, responsavel, setor)
         self.sistema_operacional = "Não informado"
@@ -94,7 +94,7 @@ class Notebook(Ativo):
     def adicionar_detalhe(self, detalhe):
         self.sistema_operacional = detalhe
 
-class Servidor(Ativo):
+class Servidor(Equipamento):
     def __init__(self, id, nome, responsavel, setor):
         super().__init__(id, nome, responsavel, setor)
         self.tipo_servidor = "Não informado"
@@ -128,7 +128,7 @@ class Servidor(Ativo):
     def adicionar_detalhe(self, detalhe):
         self.tipo_servidor = detalhe
 
-class Roteador(Ativo):
+class Roteador(Equipamento):
     def __init__(self, id, nome, responsavel, setor):
         super().__init__(id, nome, responsavel, setor)
         self.versao_firmware = "Não informado"
@@ -149,7 +149,7 @@ class Roteador(Ativo):
     def adicionar_detalhe(self, detalhe):
         self.versao_firmware = detalhe
     
-class Aplicativo(Ativo):
+class Aplicativo(Equipamento):
     def __init__(self, id, nome, responsavel, setor):
         super().__init__(id, nome, responsavel, setor)
         self.versao = "Não informado"
