@@ -1,4 +1,4 @@
-from modelos import VERMELHO, TITULO, NORMAL, TiposDeAtivos
+from modelos import VERMELHO, NORMAL, TiposDeAtivos
 from interface import escolher_opcao
 
 def verificar_int(mensagem):

@@ -1,6 +1,6 @@
 import copy
 from calculo_risco import calculo_risco_efetivo, calculo_risco_proprio
-from modelos import TITULO, VERDE, VERMELHO, AMARELO, NORMAL, TiposDeAtivos
+from modelos import VERDE, VERMELHO, AMARELO, NORMAL, TiposDeAtivos
 from dados import salvar_arquivos
 from validacoes import (verificar_int, pedir_input,
      pedir_tipo_de_ativo, exibe_vulnerabilidades_ativo, pedir_cvss, pedir_fator_dependencia)
@@ -69,11 +69,9 @@ def cadastrar_vulnerabilidade(lista_ativos):
         return
 
     ativos_em_opcoes = ativos_em_opcoes_interface(lista_ativos)
-    imprimir_titulo("Cadastro de Vulnerabilidades")
     ativo = escolher_opcao("Escolha um ativo:", ativos_em_opcoes, "Cadastro de vulnerabilidade")
     if ativo == None:
         return
-    print()
 
     vulnerabilidade = criar_vulnerabilidade()
     ativo.adicionar_vulnerabilidade(vulnerabilidade)
@@ -104,8 +102,8 @@ def listar_ativos(lista_ativos, aguardar=True):
 
 def consultar_ativo(lista_ativos):
     limpar_terminal()
-    imprimir_titulo("Consulta de ativos")
     if not lista_ativos:
+        imprimir_titulo("Consulta de ativos")
         print(f"{AMARELO}->{NORMAL} Não há ativos cadastrados!")
         print("Cadastre um ativo antes de consultar suas informações.")
         aguardar_retorno_menu()
@@ -120,16 +118,14 @@ def consultar_ativo(lista_ativos):
             {"name": "4 - Voltar ao menu principal", "value": 4},
         ]
 
+        imprimir_titulo("Consulta de ativos")
         busca_opcao = escolher_opcao("Escolha uma opção", opcoes_consultar)
-        if busca_opcao not in range(1, 5):
-            print(f"{VERMELHO}Essa opção não está disponível, Tente novamente!{NORMAL}")
-            continue
-        limpar_terminal()
 
         if busca_opcao == 1:
             ativos_em_opcoes = ativos_em_opcoes_interface(lista_ativos)
             ativo = escolher_opcao("Escolha um ativo:", ativos_em_opcoes)
             if ativo == None:
+                limpar_terminal()
                 continue
             print()
             limpar_terminal()
@@ -166,8 +162,8 @@ def consultar_ativo(lista_ativos):
 
 def atualizar_ativo(lista_ativos):
     limpar_terminal()
-    imprimir_titulo("Atualização de ativos")
     if not lista_ativos:
+        imprimir_titulo("Atualização de ativos")
         print(f"{AMARELO}->{NORMAL} Não há ativos cadastrados!")
         print("Cadastre um ativo antes de alterar suas informações.")
         aguardar_retorno_menu()
@@ -190,6 +186,7 @@ def atualizar_ativo(lista_ativos):
     ]
 
     while True:
+        imprimir_titulo("Atualização de ativos")
         ativos_em_opcoes = ativos_em_opcoes_interface(lista_ativos)
         ativo = escolher_opcao("Escolha um ativo:", ativos_em_opcoes)
         if ativo == None:
@@ -197,6 +194,7 @@ def atualizar_ativo(lista_ativos):
         limpar_terminal()
 
         while True:
+            imprimir_titulo("Atualização de ativos")
             escolhido = escolher_opcao("O que deseja atualizar no ativo?", opcoes_atualizar)
             if escolhido == 5:
                 return
@@ -207,14 +205,15 @@ def atualizar_ativo(lista_ativos):
             
 def remover_ativo(lista_ativos):
     limpar_terminal()
-    imprimir_titulo("Remoção de ativos")
     if not lista_ativos:
+        imprimir_titulo("Remoção de ativos")
         print(f"{AMARELO}->{NORMAL} Não há ativos cadastrados!")
         print("Cadastre um ativo antes de removê-lo.")
         aguardar_retorno_menu()
         return
 
     while True:
+        imprimir_titulo("Remoção de ativos")
         ativos_em_opcoes = ativos_em_opcoes_interface(lista_ativos)
         ativo = escolher_opcao("Escolha um ativo:", ativos_em_opcoes)
         if ativo == None:
@@ -277,7 +276,9 @@ def mostrar_riscos(lista_ativos):
         return
 
     for pos, ativo in enumerate(lista_ativos):
-        print()
+        if pos > 0:
+            print()
+
         print(f"Ativo: {ativo.nome}")
         print(f"Risco próprio: {lista_dos_riscos_proprios[pos]:.2f}")        
         print(f"Risco efetivo: {lista_dos_riscos_efetivos[pos]:.2f}")
@@ -295,6 +296,7 @@ def cadastrar_dependencias(lista_ativos):
 
     while True:
         limpar_terminal()
+        imprimir_titulo("Cadastro de dependências")
         ativos_em_opcoes = ativos_em_opcoes_interface(lista_ativos)
         ativo_recebe_risco = escolher_opcao("Escolha o ativo que recebe o risco:", ativos_em_opcoes)
         if ativo_recebe_risco == None:
@@ -307,6 +309,7 @@ def cadastrar_dependencias(lista_ativos):
 
     while True:
         limpar_terminal()
+        imprimir_titulo("Cadastro de dependências")
         ativo_transmite_risco = escolher_opcao("Escolha o ativo transmissor de risco:", ativos_em_opcoes)
         if ativo_transmite_risco == None:
             return
@@ -332,8 +335,8 @@ def cadastrar_dependencias(lista_ativos):
 
     if soma_dos_fatores + fator_digitado >= 1:
         print()
-        print("Não foi possível cadastrar a dependência.")
-        print("A soma dos fatores recebidos pelo ativo deve ser menor que 1.")
+        print(f"{VERMELHO}->{NORMAL} Não foi possível cadastrar a dependência.")
+        print("O fator informado faria a soma das dependências chegar a 1 ou mais; ela precisa ser menor que 1.")
         return
 
     ativo_recebe_risco.adicionar_dependencia(ativo_transmite_risco.id, fator_digitado)
@@ -347,29 +350,28 @@ def cadastrar_dependencias(lista_ativos):
 
 def remover_dependencia(lista_ativos):
     limpar_terminal()
-    imprimir_titulo("Remoção de dependências")
     if not lista_ativos:
+        imprimir_titulo("Remoção de dependências")
         print(f"{AMARELO}->{NORMAL} Não há ativos cadastrados!")
         print("Cadastre pelo menos dois ativos e uma dependência antes de removê-la.")
         aguardar_retorno_menu()
         return
 
     while True:
-        limpar_terminal()
+        imprimir_titulo("Remoção de dependências")
         ativos_em_opcoes = ativos_em_opcoes_interface(lista_ativos)
         ativo_recebe_risco = escolher_opcao("Escolha o ativo que recebe o risco:", ativos_em_opcoes)
         if ativo_recebe_risco == None:
             return
 
         if not ativo_recebe_risco.dependencias:
-            print(f"{VERMELHO}ERRO:{NORMAL} Esse ativo não possui dependências cadastradas")
+            print(f"{VERMELHO}ERRO:{NORMAL} Esse ativo ainda não tem dependências para remover.")
             aguardar_retorno_menu()
             continue
         break
 
     limpar_terminal()
-    print(f"{TITULO}=-=-=-=-=- RELAÇÕES -=-=-=-=-=-={NORMAL}")
-    print()
+    imprimir_titulo("Relações")
 
     for dependencia in ativo_recebe_risco.dependencias:
         id_transmissor = dependencia["AtivoIdBaseRisco"]
@@ -410,6 +412,7 @@ def remover_dependencia(lista_ativos):
 
 def atualizar_nome(ativo, lista_ativos):
     limpar_terminal()
+    imprimir_titulo("Atualização de nome")
     print(f"OBS: O nome atual é {ativo.nome}")
     backup_nome = ativo.nome
     ativo.nome = pedir_input("Digite o novo nome do ativo: ")
@@ -422,6 +425,7 @@ def atualizar_nome(ativo, lista_ativos):
 
 def atualizar_responsavel(ativo, lista_ativos):
     limpar_terminal()
+    imprimir_titulo("Atualização de responsável")
     print(f"OBS: O responsável atual é {ativo.responsavel}")
     backup_responsavel = ativo.responsavel
     ativo.responsavel = pedir_input("Digite o responsável pelo ativo: ")
@@ -434,6 +438,7 @@ def atualizar_responsavel(ativo, lista_ativos):
 
 def atualizar_setor(ativo, lista_ativos):
     limpar_terminal()
+    imprimir_titulo("Atualização de setor")
     print(f"OBS: O setor responsável atual é {ativo.setor}")
     backup_setor = ativo.setor
     ativo.setor = pedir_input("Digite o setor responsável: ")
@@ -449,6 +454,7 @@ def atualizar_tipo(ativo, lista_ativos):
 
     while True:
         limpar_terminal()
+        imprimir_titulo("Atualização do tipo de ativo")
         tipo_escolhido = TiposDeAtivos(pedir_tipo_de_ativo(ativo, mostrar_atual=True))
         classe_escolhida = classes_ativos[tipo_escolhido]
 
@@ -488,8 +494,7 @@ def buscar_ativo_por_nome(nome_do_ativo, lista_ativos):
     return [ativo for ativo in lista_ativos if nome_do_ativo.lower() == ativo.nome.lower()]
 
 def exibir_ativos_e_vulnerabilidades(ativo):
-    print(f"{TITULO}-=-=-=-=-=-=- ATIVO ENCONTRADO -=-=-=-=-=-=-=-{NORMAL}")
-    print()
+    imprimir_titulo("Ativo encontrado")
     ativo.exibir_detalhes()
     print()
     exibe_vulnerabilidades_ativo(ativo)
